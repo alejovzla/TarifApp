@@ -395,7 +395,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
           <button class="pin-cancel-btn" onclick="cancelPinMode()">Cancelar</button>
           <button class="pin-confirm-btn" onclick="confirmPinMode()">✓ Confirmar</button>
         </div>
-        <button class="map-style-toggle" id="mapStyleToggle" onclick="toggleMapStyle()">🌙 Oscuro</button>
+        <button class="map-style-toggle" id="mapStyleToggle" onclick="toggleMapStyle()">☀️ Estándar</button>
       </div>
 
       <div class="map-hint" id="mapHint">Escribe una dirección o toca el mapa para colocar puntos</div>
@@ -671,7 +671,7 @@ let demanda       = 'regular';
 let tasaBcvActual = null;
 let routeKm       = 0;
 let routeMin      = 0;
-let mapStyleDark  = true;
+let mapStyleDark  = false;
 
 /* Google Maps */
 let gMap, directionsService, directionsRenderer;
@@ -711,7 +711,8 @@ function initMap() {
     gMap = new google.maps.Map(document.getElementById('mapContainer'), {
         center: { lat: 10.4806, lng: -66.9036 },
         zoom: 12,
-        styles: DARK_MAP_STYLE,
+        styles: [],
+        gestureHandling: 'greedy',
         mapTypeControl: false, streetViewControl: false, fullscreenControl: false,
         zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM }
     });

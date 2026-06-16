@@ -32,14 +32,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .section-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
 
 /* ── VEHICLE ── */
-.vehicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.vehicle-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:16px 10px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
-.vehicle-card:hover{border-color:#6C63FF88}
-.vehicle-card.selected{border-color:var(--primary);background:rgba(108,99,255,.10)}
-.vehicle-icon{font-size:34px;display:block;margin-bottom:6px}
-.vehicle-name{font-size:14px;font-weight:700}
-.vehicle-meta{font-size:10px;color:var(--text-muted);margin-top:3px;line-height:1.6}
-.vehicle-card.selected .vehicle-meta{color:#9A94FF}
+.vehicle-row{display:flex;gap:10px}
+.vehicle-btn{flex:1;display:flex;align-items:center;gap:11px;border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:border-color .2s,background .2s;background:none;font-family:inherit;text-align:left}
+.vehicle-btn:hover{border-color:#6C63FF88}
+.vehicle-btn.selected{border-color:var(--primary);background:rgba(108,99,255,.10)}
+.vehicle-btn-icon{font-size:28px;flex-shrink:0}
+.vehicle-btn-name{font-size:14px;font-weight:700;color:var(--text)}
+.vehicle-btn-meta{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.5}
+.vehicle-btn.selected .vehicle-btn-meta{color:#9A94FF}
 
 /* ── BCV WIDGET ── */
 .bcv-card.loaded{border-color:rgba(67,217,173,.30)}
@@ -91,18 +91,22 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .stop-input{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-family:inherit;padding:11px 36px 11px 12px;outline:none;transition:border-color .2s}
 .stop-input:focus{border-color:var(--primary)}
 .stop-input::placeholder{color:#44445A}
-.stop-clear-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;display:none}
+.stop-clear-btn{position:absolute;right:34px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;display:none;z-index:2}
 .stop-clear-btn.visible{display:block}
-.stop-action-btn{background:rgba(108,99,255,.12);border:1.5px solid rgba(108,99,255,.28);border-radius:8px;color:var(--primary);font-size:13px;font-weight:800;width:36px;height:36px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-family:inherit}
-.stop-action-btn:hover{background:rgba(108,99,255,.25)}
-.stop-action-btn.remove{background:rgba(255,101,132,.10);border-color:rgba(255,101,132,.22);color:var(--danger);font-size:16px}
-.stop-action-btn.gps{background:rgba(67,217,173,.10);border-color:rgba(67,217,173,.25);color:var(--accent);font-size:14px}
-.stop-action-btn:disabled{opacity:.4;cursor:not-allowed}
+.stop-clear-btn.only{right:8px}
+.stop-action-inline{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;padding:3px 5px;line-height:1;color:var(--text-muted);z-index:2;display:flex;align-items:center;justify-content:center}
+.stop-action-inline.gps{color:var(--accent)}
+.stop-action-inline.remove{color:var(--danger)}
+.stop-action-inline:disabled{opacity:.4;cursor:not-allowed}
+.stop-input.with-action{padding-right:68px}
+.stop-add-btn{width:100%;background:none;border:1.5px dashed rgba(108,99,255,.28);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;font-weight:700;padding:9px 14px;cursor:pointer;font-family:inherit;margin-bottom:8px;transition:border-color .2s,color .2s}
+.stop-add-btn:hover{border-color:var(--primary);color:var(--primary)}
 .map-opt-btn{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:13px;font-weight:600;padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .2s,color .2s;margin-bottom:8px;font-family:inherit}
 .map-opt-btn:hover{border-color:var(--primary);color:var(--primary)}
 
 /* ── MAP ── */
-#mapContainer{width:100%;height:250px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);transition:height .3s}
+#mapContainer{width:100%;height:0;border-radius:var(--radius-sm);overflow:hidden;border:1px solid transparent;transition:height .35s ease,border-color .3s}
+#mapContainer.map-visible{height:250px;border-color:var(--border)}
 .gm-style .gm-style-cc a{color:var(--text-muted) !important}
 .map-hint{font-size:11px;color:var(--text-muted);text-align:center;padding:4px 0 2px}
 .route-info-bar{display:none;align-items:center;justify-content:center;background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.20);border-radius:var(--radius-sm);padding:10px 14px;margin-top:8px;gap:0}
@@ -110,15 +114,29 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .route-divider{width:1px;height:24px;background:var(--border)}
 .route-loading{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
 
-/* ── MAP WRAPPER + OVERLAYS ── */
+/* ── MAP WRAPPER + PIN MODE FULLSCREEN ── */
 .map-wrapper{position:relative;margin:8px 0}
-.map-style-toggle{position:absolute;bottom:12px;left:10px;z-index:10;background:rgba(13,13,26,.88);border:1px solid rgba(108,99,255,.4);border-radius:20px;color:var(--text);font-size:11px;font-weight:700;padding:5px 13px;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.map-style-toggle{position:absolute;bottom:78px;left:10px;z-index:10;background:rgba(13,13,26,.88);border:1px solid rgba(108,99,255,.4);border-radius:20px;color:var(--text);font-size:11px;font-weight:700;padding:5px 13px;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s;font-family:inherit;display:flex;align-items:center;gap:5px}
 .map-style-toggle:hover{background:rgba(108,99,255,.25)}
 .pin-crosshair-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;z-index:15;display:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));margin-top:-4px}
-.pin-mode-bar{position:absolute;top:0;left:0;right:0;background:rgba(13,13,26,.92);border-radius:var(--radius-sm) var(--radius-sm) 0 0;padding:10px 14px;display:none;align-items:center;gap:8px;z-index:20;backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-.pin-mode-label{flex:1;font-size:12px;color:var(--text-muted)}
-.pin-cancel-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:inherit}
-.pin-confirm-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 16px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit}
+
+/* Pin top bar */
+.map-pin-topbar{display:none;align-items:center;gap:10px;background:var(--bg-card);padding:14px 16px;border-bottom:1px solid var(--border);z-index:20}
+.map-pin-topbar-label{flex:1;font-size:13px;font-weight:700;color:var(--text)}
+.map-pin-topbar-cancel{background:none;border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:inherit}
+
+/* Pin bottom bar */
+.map-pin-bottombar{display:none;background:var(--bg-card);padding:14px 16px;border-top:1px solid var(--border);z-index:20}
+.map-pin-confirm-big{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:900;padding:16px;cursor:pointer;font-family:inherit;letter-spacing:.3px}
+.map-pin-confirm-big:hover{opacity:.9}
+.map-pin-confirm-big:active{transform:scale(.98)}
+
+/* Fullscreen mode */
+.map-wrapper.pin-fullscreen{position:fixed;inset:0;z-index:800;margin:0;border-radius:0;display:flex;flex-direction:column;background:var(--bg)}
+.map-wrapper.pin-fullscreen .map-pin-topbar{display:flex}
+.map-wrapper.pin-fullscreen #mapContainer{flex:1;height:auto!important;border-radius:0;border:none}
+.map-wrapper.pin-fullscreen .map-pin-bottombar{display:block}
+.map-wrapper.pin-fullscreen .map-style-toggle{bottom:82px}
 
 /* Google Places Autocomplete */
 .pac-container{background:var(--bg-card) !important;border:1px solid var(--border) !important;border-radius:var(--radius-sm) !important;box-shadow:0 8px 32px rgba(0,0,0,.5) !important;font-family:'Segoe UI',system-ui,sans-serif !important;margin-top:2px}
@@ -327,17 +345,21 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
     <!-- Vehículo -->
     <div class="card">
       <div class="section-title">Tipo de Vehículo</div>
-      <div class="vehicle-grid">
-        <div class="vehicle-card selected" id="veh-moto" onclick="selectVehicle('moto')">
-          <span class="vehicle-icon">🏍️</span>
-          <div class="vehicle-name">Moto</div>
-          <div class="vehicle-meta">Banderazo: $0.50<br>Mín: $1.50</div>
-        </div>
-        <div class="vehicle-card" id="veh-carro" onclick="selectVehicle('carro')">
-          <span class="vehicle-icon">🚗</span>
-          <div class="vehicle-name">Carro</div>
-          <div class="vehicle-meta">Banderazo: $1.00<br>Mín: $2.50</div>
-        </div>
+      <div class="vehicle-row">
+        <button class="vehicle-btn selected" id="veh-moto" onclick="selectVehicle('moto')">
+          <span class="vehicle-btn-icon">🏍️</span>
+          <div>
+            <div class="vehicle-btn-name">Moto</div>
+            <div class="vehicle-btn-meta">Banderazo $0.50 · Mín $1.50</div>
+          </div>
+        </button>
+        <button class="vehicle-btn" id="veh-carro" onclick="selectVehicle('carro')">
+          <span class="vehicle-btn-icon">🚗</span>
+          <div>
+            <div class="vehicle-btn-name">Carro</div>
+            <div class="vehicle-btn-meta">Banderazo $1.00 · Mín $2.50</div>
+          </div>
+        </button>
       </div>
     </div>
 
@@ -387,15 +409,17 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       </button>
 
       <!-- Mapa Google -->
-      <div class="map-wrapper">
+      <div class="map-wrapper" id="mapWrapper">
+        <div class="map-pin-topbar" id="pinModeBar">
+          <span class="map-pin-topbar-label" id="pinModeLabel">Arrastra el mapa al punto deseado</span>
+          <button class="map-pin-topbar-cancel" onclick="cancelPinMode()">✕ Cancelar</button>
+        </div>
         <div id="mapContainer"></div>
         <div class="pin-crosshair-wrap" id="pinCrosshair">📍</div>
-        <div class="pin-mode-bar" id="pinModeBar">
-          <span class="pin-mode-label" id="pinModeLabel">Arrastra el mapa y confirma</span>
-          <button class="pin-cancel-btn" onclick="cancelPinMode()">Cancelar</button>
-          <button class="pin-confirm-btn" onclick="confirmPinMode()">✓ Confirmar</button>
-        </div>
         <button class="map-style-toggle" id="mapStyleToggle" onclick="toggleMapStyle()">☀️ Estándar</button>
+        <div class="map-pin-bottombar">
+          <button class="map-pin-confirm-big" onclick="confirmPinMode()">✓ Confirmar ubicación</button>
+        </div>
       </div>
 
       <div class="map-hint" id="mapHint">Escribe una dirección o toca el mapa para colocar puntos</div>
@@ -784,19 +808,30 @@ function renderStopInputs() {
         row.className = 'stop-item';
         row.id = 'stopRow_' + stop.id;
 
+        const hasAction = isOrigin || (!isOrigin && !isDest);
         row.innerHTML = `
             <span class="stop-dot ${dotClass}" title="Punto ${label}"></span>
             <div class="stop-input-wrap">
-                <input type="text" class="stop-input" id="stopInput_${stop.id}"
+                <input type="text" class="stop-input${hasAction ? ' with-action' : ''}" id="stopInput_${stop.id}"
                        placeholder="${ph}" value="${stop.address}" autocomplete="off">
-                <button class="stop-clear-btn${stop.address ? ' visible' : ''}"
+                <button class="stop-clear-btn${stop.address ? ' visible' : ''}${!hasAction ? ' only' : ''}"
                         onclick="clearStop(${stop.id})" title="Borrar">✕</button>
+                ${isOrigin ? `<button class="stop-action-inline gps" id="gpsBtn_${stop.id}"
+                                      onclick="requestGPSForStop(${stop.id})" title="Usar GPS">📍</button>` : ''}
+                ${!isOrigin && !isDest ? `<button class="stop-action-inline remove"
+                                                  onclick="removeStopById(${stop.id})" title="Eliminar parada">×</button>` : ''}
             </div>
-            ${isOrigin ? `<button class="stop-action-btn gps" onclick="requestGPSForStop(${stop.id})" title="GPS">📍</button>` : ''}
-            ${!isOrigin && !isDest ? `<button class="stop-action-btn remove" onclick="removeStopById(${stop.id})" title="Eliminar">×</button>` : ''}
-            ${isDest && stops.length < MAX_STOPS ? `<button class="stop-action-btn" onclick="addWaypoint()" title="Añadir parada">+</button>` : ''}
         `;
         container.appendChild(row);
+
+        /* Waypoint add button after last stop */
+        if (isDest && stops.length < MAX_STOPS) {
+            const addBtn = document.createElement('button');
+            addBtn.className = 'stop-add-btn';
+            addBtn.textContent = '+ Agregar parada intermedia';
+            addBtn.onclick = addWaypoint;
+            container.appendChild(addBtn);
+        }
 
         /* Attach Places Autocomplete */
         const input = document.getElementById('stopInput_' + stop.id);
@@ -911,6 +946,8 @@ function calcRoute() {
             routeKm  = Math.round(totalM / 100) / 10;
             routeMin = Math.round(totalS / 60);
             routePath = result.routes[0].overview_path || [];
+            document.getElementById('mapContainer').classList.add('map-visible');
+            google.maps.event.trigger(gMap, 'resize');
 
             document.getElementById('inputKm').value   = routeKm.toFixed(1);
             document.getElementById('inputMin').value  = routeMin;
@@ -952,11 +989,14 @@ function enterPinMode(stopId) {
     pinModeTarget = stopId;
     const stop  = stops.find(s => s.id === stopId);
     const idx   = stops.indexOf(stop);
-    const label = String.fromCharCode(65 + idx);
-    document.getElementById('pinModeLabel').textContent = `Arrastra el mapa → Punto ${label}`;
+    const isOrigin = idx === 0;
+    const isDest   = idx === stops.length - 1;
+    const tipo  = isOrigin ? 'origen' : (isDest ? 'destino' : `parada ${idx}`);
+    document.getElementById('pinModeLabel').textContent = `Selecciona el punto de ${tipo}`;
     document.getElementById('pinCrosshair').style.display = 'block';
-    document.getElementById('pinModeBar').style.display   = 'flex';
-    document.getElementById('mapContainer').style.height  = '320px';
+    document.getElementById('mapWrapper').classList.add('pin-fullscreen');
+    document.body.style.overflow = 'hidden';
+    google.maps.event.trigger(gMap, 'resize');
 }
 
 function enterPinModeAuto() {
@@ -982,8 +1022,10 @@ function confirmPinMode() {
 function cancelPinMode() {
     pinModeTarget = null;
     document.getElementById('pinCrosshair').style.display = 'none';
-    document.getElementById('pinModeBar').style.display   = 'none';
-    document.getElementById('mapContainer').style.height  = '250px';
+    document.getElementById('mapWrapper').classList.remove('pin-fullscreen');
+    document.body.style.overflow = '';
+    if (routeKm > 0) document.getElementById('mapContainer').classList.add('map-visible');
+    google.maps.event.trigger(gMap, 'resize');
 }
 
 /* ════════════════════════════════════════
@@ -1000,7 +1042,7 @@ function toggleMapStyle() {
 ════════════════════════════════════════ */
 function requestGPSForStop(stopId) {
     if (!navigator.geolocation) { alert('GPS no disponible.'); return; }
-    const btn = document.querySelector(`#stopRow_${stopId} .stop-action-btn.gps`);
+    const btn = document.getElementById('gpsBtn_' + stopId);
     if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
 
     navigator.geolocation.getCurrentPosition(
@@ -1020,6 +1062,7 @@ function requestGPSForStop(stopId) {
         },
         err => {
             if (btn) { btn.textContent = '📍'; btn.disabled = false; }
+
             const msgs = { 1: 'Permiso denegado.', 2: 'Sin señal.', 3: 'Tiempo agotado.' };
             alert('Error GPS: ' + (msgs[err.code] || 'Desconocido'));
         },
@@ -1176,7 +1219,7 @@ async function fetchBCVRate() {
 ════════════════════════════════════════ */
 function selectVehicle(v) {
     vehiculo = v;
-    document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.vehicle-btn').forEach(c => c.classList.remove('selected'));
     document.getElementById('veh-'+v).classList.add('selected');
     updateEstimationPreview();
 }
@@ -1535,6 +1578,7 @@ function resetApp() {
     /* Limpiar marcadores de paradas */
     stops.forEach(s => { if(s.marker) s.marker.setMap(null); });
     if (directionsRenderer) directionsRenderer.setDirections({ routes:[] });
+    document.getElementById('mapContainer').classList.remove('map-visible');
     showRouteBar('hidden');
     document.getElementById('inputKm').value = '';
     document.getElementById('inputKm').readOnly = false;

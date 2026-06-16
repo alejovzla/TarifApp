@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TarifApp — Taxímetro en Tiempo Real</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5A52D5">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -337,7 +344,10 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
     <div class="header-logo">🚀</div>
     <h1>TarifApp</h1>
     <p>Taxímetro en Tiempo Real · Venezuela</p>
-    <button class="settings-btn" onclick="changeApiKey()">⚙️ API Key</button>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+      <button class="settings-btn" id="installBtn" onclick="installApp()" style="display:none">⬇️ Instalar App</button>
+      <button class="settings-btn" onclick="changeApiKey()">⚙️ API Key</button>
+    </div>
   </div>
 
   <div class="container">
@@ -1660,6 +1670,39 @@ function loadGoogleMapsScript(key) {
         document.getElementById('apiKeyModal').style.display = 'flex';
     };
     document.head.appendChild(s);
+}
+
+/* ════════════════════════════════════════
+   PWA — INSTALACIÓN Y SERVICE WORKER
+════════════════════════════════════════ */
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    document.getElementById('installBtn').style.display = 'inline-flex';
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+});
+
+async function installApp() {
+    if (!deferredInstallPrompt) {
+        alert('Para instalar: abre el menú ⋮ de Chrome → "Instalar app" o "Agregar a pantalla de inicio".\n\nEn iPhone: toca Compartir 📤 → "Agregar a pantalla de inicio".');
+        return;
+    }
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
 }
 
 /* ── Arranque ── */

@@ -1,0 +1,17 @@
+{
+  "name": "TarifApp — Taxímetro en Tiempo Real",
+  "short_name": "TarifApp",
+  "description": "Taxímetro en tiempo real para Venezuela con tasa BCV oficial",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0D0D1A",
+  "theme_color": "#5A52D5",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

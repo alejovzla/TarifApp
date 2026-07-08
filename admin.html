@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TarifApp — Panel de administración</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#6C63FF;--accent:#43D9AD;--warning:#FFB347;--danger:#FF6584;
+  --bg:#0D0D1A;--bg-card:#13132A;--bg-input:#0A0A18;--border:#252545;
+  --text:#E8E8F4;--text-muted:#7A7A9A;--radius:14px;--radius-sm:10px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.wrap{max-width:720px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+h2{font-size:14px;font-weight:700;margin:28px 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+p.sub{font-size:12px;color:var(--text-muted);margin-bottom:20px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:14px}
+input{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-family:inherit;padding:12px 14px;outline:none;margin-bottom:10px}
+input:focus{border-color:var(--primary)}
+button{background:linear-gradient(135deg,var(--primary),#7C3AED);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;padding:12px 18px;cursor:pointer;font-family:inherit}
+button:hover{opacity:.9}
+button.secondary{background:none;border:1.5px solid var(--border);color:var(--text-muted)}
+.error{font-size:12px;color:var(--danger);margin-bottom:10px;display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);padding:8px 6px;border-bottom:1px solid var(--border)}
+td{padding:10px 6px;border-bottom:1px solid rgba(37,37,69,.6);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.status.ok{background:rgba(67,217,173,.12);color:var(--accent)}
+.status.no{background:rgba(255,101,132,.12);color:var(--danger)}
+.toggle{width:20px;height:20px;cursor:pointer;accent-color:var(--accent)}
+.empty{color:var(--text-muted);font-size:13px;text-align:center;padding:20px;font-style:italic}
+.row-inline{display:flex;gap:10px;align-items:center}
+.row-inline input{margin-bottom:0}
+#topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+#topbar button{padding:7px 14px;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div id="loginBox">
+    <h1>🔒 Panel de administración</h1>
+    <p class="sub">Inicia sesión con tu cuenta de administrador de TarifApp.</p>
+    <div class="card">
+      <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="off">
+      <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="off"
+             onkeydown="if(event.key==='Enter') login()">
+      <div class="error" id="loginError"></div>
+      <button onclick="login()">Iniciar sesión</button>
+    </div>
+  </div>
+
+  <div id="panel" style="display:none">
+    <div id="topbar">
+      <h1>🚕 Choferes</h1>
+      <button class="secondary" onclick="logout()">Cerrar sesión</button>
+    </div>
+    <p class="sub">Marca el check cuando un chofer pague su semana — se desbloquea al instante. Desmárcalo para bloquearlo de inmediato.</p>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Chofer</th><th>Teléfono</th><th>Estado</th><th>Pagó esta semana</th></tr>
+        </thead>
+        <tbody id="driversBody">
+          <tr><td colspan="4" class="empty">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Clave de Google Maps compartida</h2>
+    <p class="sub">Esta es la clave que reciben todos los choferes con la suscripción activa — nunca la ven, se entrega solo si están al día.</p>
+    <div class="card">
+      <div class="row-inline">
+        <input type="text" id="mapsKeyInput" placeholder="AIzaSy…" autocomplete="off" spellcheck="false">
+        <button onclick="saveMapsKey()">Guardar</button>
+      </div>
+      <div class="error" id="mapsKeyMsg" style="color:var(--accent);margin-top:8px"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script>
+// Debe ser EXACTAMENTE la misma configuración que index.html (mismo proyecto Firebase).
+const firebaseConfig = {
+    apiKey:            "TU_FIREBASE_API_KEY",
+    authDomain:        "tu-proyecto.firebaseapp.com",
+    projectId:         "tu-proyecto",
+    storageBucket:     "tu-proyecto.appspot.com",
+    messagingSenderId: "000000000000",
+    appId:             "1:000000000000:web:xxxxxxxxxxxxxxxx"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// Solo esta cuenta puede administrar — debe coincidir con el correo fijado en las reglas de Firestore.
+const ADMIN_EMAIL = 'alej4ndrovzla@gmail.com';
+
+async function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    const err   = document.getElementById('loginError');
+    err.style.display = 'none';
+    try {
+        await auth.signInWithEmailAndPassword(email, pass);
+    } catch (e) {
+        err.textContent = '⚠️ Correo o contraseña incorrectos.';
+        err.style.display = 'block';
+    }
+}
+
+function logout() { auth.signOut(); }
+
+auth.onAuthStateChanged(user => {
+    const isAdmin = user && user.email === ADMIN_EMAIL;
+    document.getElementById('loginBox').style.display = isAdmin ? 'none' : 'block';
+    document.getElementById('panel').style.display   = isAdmin ? 'block' : 'none';
+    if (isAdmin) { loadDrivers(); loadMapsKey(); }
+});
+
+async function loadDrivers() {
+    const body = document.getElementById('driversBody');
+    const snap = await db.collection('drivers').orderBy('createdAt', 'desc').get();
+    if (snap.empty) { body.innerHTML = '<tr><td colspan="4" class="empty">Aún no hay choferes registrados.</td></tr>'; return; }
+
+    const now = new Date();
+    body.innerHTML = '';
+    snap.forEach(doc => {
+        const d = doc.data();
+        const paidUntil = d.paidUntil?.toDate?.() || null;
+        const isPaid = paidUntil && paidUntil > now;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(d.name || '(sin nombre)')}<br><span style="color:var(--text-muted);font-size:11px">${escapeHtml(d.email || '')}</span></td>
+            <td>${escapeHtml(d.phone || '—')}</td>
+            <td><span class="status ${isPaid ? 'ok' : 'no'}">${isPaid ? '✓ Pagó · vence ' + paidUntil.toLocaleDateString('es-VE') : '✕ Vencido'}</span></td>
+            <td><input type="checkbox" class="toggle" ${isPaid ? 'checked' : ''} onchange="togglePaid('${doc.id}', this.checked)"></td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+async function togglePaid(uid, checked) {
+    const paidUntil = checked
+        ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)   // +7 días
+        : new Date(0);                                      // bloqueo inmediato
+    await db.collection('drivers').doc(uid).update({ paidUntil });
+    loadDrivers();
+}
+
+async function loadMapsKey() {
+    const doc = await db.collection('config').doc('mapsKey').get();
+    document.getElementById('mapsKeyInput').value = doc.exists ? (doc.data().key || '') : '';
+}
+
+async function saveMapsKey() {
+    const key = document.getElementById('mapsKeyInput').value.trim();
+    const msg = document.getElementById('mapsKeyMsg');
+    await db.collection('config').doc('mapsKey').set({ key });
+    msg.textContent = '✓ Clave guardada.';
+    setTimeout(() => { msg.textContent = ''; }, 3000);
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+</script>
+</body>
+</html>

@@ -300,7 +300,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .fade-up{animation:fadeUp .35s ease both}
 .d1{animation-delay:.07s}.d2{animation-delay:.14s}.d3{animation-delay:.21s}
 
-/* ── API KEY MODAL ── */
+/* ── AUTENTICACIÓN / SUSCRIPCIÓN (modal reutiliza estas clases) ── */
 .apikey-overlay{position:fixed;inset:0;background:rgba(0,0,0,.80);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
 .apikey-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;max-width:440px;width:100%}
 .apikey-title{font-size:18px;font-weight:800;margin-bottom:6px}
@@ -315,26 +315,31 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .apikey-cancel-link:hover{color:var(--text)}
 .settings-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:rgba(255,255,255,.65);font-size:11px;padding:4px 11px;cursor:pointer;font-family:inherit;margin-top:8px;transition:background .2s}
 .settings-btn:hover{background:rgba(255,255,255,.16)}
+.settings-btn.tab-active{background:rgba(108,99,255,.4);color:#fff}
 </style>
 </head>
 <body>
 
-<!-- ══ API KEY MODAL ══ -->
-<div class="apikey-overlay" id="apiKeyModal" style="display:none">
+<!-- ══ AUTENTICACIÓN ══ -->
+<div class="apikey-overlay" id="authModal" style="display:none">
   <div class="apikey-box">
-    <div class="apikey-title">🗺️ Configura Google Maps</div>
-    <div class="apikey-sub">TarifApp necesita tu propia clave de Google Maps API. La clave se guarda solo en tu dispositivo y nunca se comparte.</div>
-    <div class="apikey-steps">
-      1. Ve a <strong>console.cloud.google.com</strong><br>
-      2. Crea un proyecto → habilita <em>Maps JavaScript API</em>, <em>Places API</em> y <em>Directions API</em><br>
-      3. En <em>Credenciales</em> genera una <em>API Key</em><br>
-      4. (Recomendado) Restringe la clave a tus dominios / IP
+    <div class="apikey-title" id="authTitle">👤 Inicia sesión</div>
+    <div class="apikey-sub" id="authSub">Ingresa con tu cuenta de chofer para usar TarifApp.</div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="settings-btn tab-active" id="authTabLogin" style="flex:1" onclick="switchAuthTab('login')">Iniciar sesión</button>
+      <button class="settings-btn" id="authTabRegister" style="flex:1" onclick="switchAuthTab('register')">Crear cuenta</button>
     </div>
-    <input type="text" class="apikey-input" id="apiKeyInput" placeholder="AIzaSy…" autocomplete="off" spellcheck="false"
-           onkeydown="if(event.key==='Enter') saveApiKey()">
-    <div class="apikey-error" id="apiKeyError">⚠️ La clave debe comenzar con "AIza"</div>
-    <button class="apikey-save-btn" onclick="saveApiKey()">✓ Guardar y continuar</button>
-    <span class="apikey-cancel-link" id="apiKeyCancelLink" style="display:none" onclick="closeApiKeyModal()">Cancelar</span>
+
+    <div id="authFieldsRegister" style="display:none">
+      <input type="text" class="apikey-input" id="authName" placeholder="Nombre completo" autocomplete="off">
+      <input type="tel" class="apikey-input" id="authPhone" placeholder="Teléfono (WhatsApp)" autocomplete="off">
+    </div>
+    <input type="email" class="apikey-input" id="authEmail" placeholder="Correo electrónico" autocomplete="off" spellcheck="false">
+    <input type="password" class="apikey-input" id="authPassword" placeholder="Contraseña" autocomplete="off"
+           onkeydown="if(event.key==='Enter') submitAuth()">
+    <div class="apikey-error" id="authError"></div>
+    <button class="apikey-save-btn" id="authSubmitBtn" onclick="submitAuth()">✓ Iniciar sesión</button>
   </div>
 </div>
 
@@ -344,9 +349,10 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
     <div class="header-logo">🚀</div>
     <h1>TarifApp</h1>
     <p>Taxímetro en Tiempo Real · Venezuela</p>
-    <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap">
       <button class="settings-btn" id="installBtn" onclick="installApp()" style="display:none">⬇️ Instalar App</button>
-      <button class="settings-btn" onclick="changeApiKey()">⚙️ API Key</button>
+      <span class="settings-btn" id="subStatusBadge" style="cursor:default"></span>
+      <button class="settings-btn" onclick="doLogout()">🔒 Cerrar sesión</button>
     </div>
   </div>
 
@@ -658,6 +664,31 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
   </div>
 </div>
 
+
+<!-- ══ SCREEN 4 — SUSCRIPCIÓN VENCIDA ══ -->
+<div id="screenBlocked" class="screen">
+  <div class="header">
+    <div class="header-logo">🔒</div>
+    <h1>Suscripción vencida</h1>
+    <p>Renueva tu pago semanal para seguir usando TarifApp</p>
+  </div>
+  <div class="container">
+    <div class="card" style="text-align:center;padding:28px 18px">
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:18px">
+        Tu suscripción de esta semana no está activa. Contáctanos para renovar tu pago y desbloquear la app.
+      </div>
+      <a class="btn-primary" style="display:block;text-decoration:none;box-sizing:border-box"
+         href="https://wa.me/58TUNUMERO" target="_blank" rel="noopener">💬 Contactar por WhatsApp</a>
+      <button class="btn-secondary" onclick="doLogout()">🔒 Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- SDK de Firebase (Auth + Firestore) — se cargan antes del script principal -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
 <script>
 /* ════════════════════════════════════════
@@ -1631,43 +1662,86 @@ function clearHistory() {
 }
 
 /* ════════════════════════════════════════
-   API KEY — GOOGLE MAPS
+   AUTENTICACIÓN Y SUSCRIPCIÓN (Firebase)
 ════════════════════════════════════════ */
-function loadApiKey() {
-    const key = localStorage.getItem('tarifapp_gmaps_key');
-    if (!key) { document.getElementById('apiKeyModal').style.display = 'flex'; return; }
-    loadGoogleMapsScript(key);
+// TODO: reemplaza esto con las credenciales de TU proyecto Firebase.
+// Se consiguen en Firebase Console → ⚙️ Configuración del proyecto → "Tus apps" → SDK setup and configuration.
+const firebaseConfig = {
+    apiKey:            "TU_FIREBASE_API_KEY",
+    authDomain:        "tu-proyecto.firebaseapp.com",
+    projectId:         "tu-proyecto",
+    storageBucket:     "tu-proyecto.appspot.com",
+    messagingSenderId: "000000000000",
+    appId:             "1:000000000000:web:xxxxxxxxxxxxxxxx"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+let authMode = 'login'; // 'login' | 'register'
+
+function showAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+function hideAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+function switchAuthTab(mode) {
+    authMode = mode;
+    document.getElementById('authTabLogin').classList.toggle('tab-active', mode === 'login');
+    document.getElementById('authTabRegister').classList.toggle('tab-active', mode === 'register');
+    document.getElementById('authFieldsRegister').style.display = mode === 'register' ? 'block' : 'none';
+    document.getElementById('authTitle').textContent = mode === 'login' ? '👤 Inicia sesión' : '📝 Crea tu cuenta';
+    document.getElementById('authSubmitBtn').textContent = mode === 'login' ? '✓ Iniciar sesión' : '✓ Crear cuenta';
+    document.getElementById('authError').style.display = 'none';
 }
 
-function saveApiKey() {
-    const key = document.getElementById('apiKeyInput').value.trim();
-    const err = document.getElementById('apiKeyError');
-    if (!key.startsWith('AIza')) { err.style.display = 'block'; return; }
+async function submitAuth() {
+    const email = document.getElementById('authEmail').value.trim();
+    const pass  = document.getElementById('authPassword').value;
+    const err   = document.getElementById('authError');
     err.style.display = 'none';
-    localStorage.setItem('tarifapp_gmaps_key', key);
-    document.getElementById('apiKeyModal').style.display = 'none';
-    loadGoogleMapsScript(key);
+    try {
+        if (authMode === 'register') {
+            const name  = document.getElementById('authName').value.trim();
+            const phone = document.getElementById('authPhone').value.trim();
+            if (!name || !phone) { err.textContent = '⚠️ Completa nombre y teléfono.'; err.style.display = 'block'; return; }
+            const cred = await auth.createUserWithEmailAndPassword(email, pass);
+            await db.collection('drivers').doc(cred.user.uid).set({
+                name, phone, email, paidUntil: null,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            await auth.signInWithEmailAndPassword(email, pass);
+        }
+    } catch (e) {
+        err.textContent = '⚠️ ' + traducirErrorAuth(e.code);
+        err.style.display = 'block';
+    }
 }
 
-function changeApiKey() {
-    document.getElementById('apiKeyInput').value = localStorage.getItem('tarifapp_gmaps_key') || '';
-    document.getElementById('apiKeyError').style.display = 'none';
-    document.getElementById('apiKeyCancelLink').style.display = 'block';
-    document.getElementById('apiKeyModal').style.display = 'flex';
+function traducirErrorAuth(code) {
+    const m = {
+        'auth/invalid-email':        'Correo inválido.',
+        'auth/email-already-in-use': 'Ese correo ya tiene una cuenta.',
+        'auth/weak-password':        'La contraseña debe tener al menos 6 caracteres.',
+        'auth/user-not-found':       'No existe una cuenta con ese correo.',
+        'auth/wrong-password':       'Contraseña incorrecta.',
+        'auth/invalid-credential':   'Correo o contraseña incorrectos.'
+    };
+    return m[code] || 'Ocurrió un error. Intenta de nuevo.';
 }
 
-function closeApiKeyModal() {
-    document.getElementById('apiKeyModal').style.display = 'none';
+function doLogout() {
+    auth.signOut();
 }
 
+/* ════════════════════════════════════════
+   GOOGLE MAPS — CARGA DE LA CLAVE COMPARTIDA
+════════════════════════════════════════ */
 function loadGoogleMapsScript(key) {
     const s = document.createElement('script');
     s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places,geometry&callback=initMap&language=es&region=VE`;
     s.async = true;
     s.onerror = () => {
-        localStorage.removeItem('tarifapp_gmaps_key');
-        alert('No se pudo cargar Google Maps. Verifica que tu API key sea correcta.');
-        document.getElementById('apiKeyModal').style.display = 'flex';
+        alert('No se pudo cargar Google Maps. Contacta al administrador de TarifApp — puede ser un problema con la clave configurada en el servidor.');
     };
     document.head.appendChild(s);
 }
@@ -1707,7 +1781,26 @@ if ('serviceWorker' in navigator) {
 
 /* ── Arranque ── */
 loadHistory();
-loadApiKey();
+
+auth.onAuthStateChanged(async user => {
+    if (!user) { showAuthModal(); return; }
+    hideAuthModal();
+    try {
+        const driverDoc = await db.collection('drivers').doc(user.uid).get();
+        const paidUntil = driverDoc.data()?.paidUntil?.toDate?.() || null;
+        if (!paidUntil || paidUntil < new Date()) { showScreen('screenBlocked'); return; }
+
+        document.getElementById('subStatusBadge').textContent =
+            '✓ Activa hasta ' + paidUntil.toLocaleDateString('es-VE');
+        showScreen('screenEstimation');
+
+        const keyDoc = await db.collection('config').doc('mapsKey').get();
+        if (keyDoc.exists) loadGoogleMapsScript(keyDoc.data().key);
+        else alert('Aún no se ha configurado la clave de Google Maps en el servidor.');
+    } catch (e) {
+        alert('No se pudo verificar tu suscripción. Verifica tu conexión e intenta de nuevo.');
+    }
+});
 </script>
 
 

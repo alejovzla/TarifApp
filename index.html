@@ -798,6 +798,19 @@ function initMap() {
 
     initStops();
     fetchBCVRate();
+    centerMapOnUserLocation();
+}
+
+function centerMapOnUserLocation() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            gMap.setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            gMap.setZoom(15);
+        },
+        () => { /* permiso denegado o sin señal: se queda en el centro por defecto */ },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
 }
 
 /* ════════════════════════════════════════

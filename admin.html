@@ -36,6 +36,10 @@ tr:last-child td{border-bottom:none}
 .row-inline input{margin-bottom:0}
 #topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 #topbar button{padding:7px 14px;font-size:12px}
+.pwd-wrap{position:relative}
+.pwd-wrap input{padding-right:42px;margin-bottom:10px}
+.pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);padding:6px;line-height:1}
+.pwd-toggle:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -47,8 +51,11 @@ tr:last-child td{border-bottom:none}
     <p class="sub">Inicia sesión con tu cuenta de administrador de TarifApp.</p>
     <div class="card">
       <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="off">
-      <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="off"
-             onkeydown="if(event.key==='Enter') login()">
+      <div class="pwd-wrap">
+        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="off"
+               onkeydown="if(event.key==='Enter') login()">
+        <button type="button" class="pwd-toggle" onclick="togglePwd('loginPassword', this)" tabindex="-1">👁️</button>
+      </div>
       <div class="error" id="loginError"></div>
       <button onclick="login()">Iniciar sesión</button>
     </div>
@@ -90,12 +97,12 @@ tr:last-child td{border-bottom:none}
 <script>
 // Debe ser EXACTAMENTE la misma configuración que index.html (mismo proyecto Firebase).
 const firebaseConfig = {
-    apiKey:            "TU_FIREBASE_API_KEY",
-    authDomain:        "tu-proyecto.firebaseapp.com",
-    projectId:         "tu-proyecto",
-    storageBucket:     "tu-proyecto.appspot.com",
-    messagingSenderId: "000000000000",
-    appId:             "1:000000000000:web:xxxxxxxxxxxxxxxx"
+    apiKey:            "AIzaSyCIi8sOKQEhMmZAEs-BEFgfCbHONQA_DFY",
+    authDomain:        "tarifapp-vzla.firebaseapp.com",
+    projectId:         "tarifapp-vzla",
+    storageBucket:     "tarifapp-vzla.firebasestorage.app",
+    messagingSenderId: "848849404178",
+    appId:             "1:848849404178:web:28c42850bce69521b833cb"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -118,6 +125,13 @@ async function login() {
 }
 
 function logout() { auth.signOut(); }
+
+function togglePwd(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁️';
+}
 
 auth.onAuthStateChanged(user => {
     const isAdmin = user && user.email === ADMIN_EMAIL;

@@ -316,6 +316,10 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .settings-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:rgba(255,255,255,.65);font-size:11px;padding:4px 11px;cursor:pointer;font-family:inherit;margin-top:8px;transition:background .2s}
 .settings-btn:hover{background:rgba(255,255,255,.16)}
 .settings-btn.tab-active{background:rgba(108,99,255,.4);color:#fff}
+.pwd-wrap{position:relative}
+.apikey-input.has-toggle{padding-right:42px}
+.pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);padding:6px;line-height:1}
+.pwd-toggle:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -336,8 +340,11 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       <input type="tel" class="apikey-input" id="authPhone" placeholder="Teléfono (WhatsApp)" autocomplete="off">
     </div>
     <input type="email" class="apikey-input" id="authEmail" placeholder="Correo electrónico" autocomplete="off" spellcheck="false">
-    <input type="password" class="apikey-input" id="authPassword" placeholder="Contraseña" autocomplete="off"
-           onkeydown="if(event.key==='Enter') submitAuth()">
+    <div class="pwd-wrap">
+      <input type="password" class="apikey-input has-toggle" id="authPassword" placeholder="Contraseña" autocomplete="off"
+             onkeydown="if(event.key==='Enter') submitAuth()">
+      <button type="button" class="pwd-toggle" onclick="togglePwd('authPassword', this)" tabindex="-1">👁️</button>
+    </div>
     <div class="apikey-error" id="authError"></div>
     <button class="apikey-save-btn" id="authSubmitBtn" onclick="submitAuth()">✓ Iniciar sesión</button>
   </div>
@@ -678,7 +685,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
         Tu suscripción de esta semana no está activa. Contáctanos para renovar tu pago y desbloquear la app.
       </div>
       <a class="btn-primary" style="display:block;text-decoration:none;box-sizing:border-box"
-         href="https://wa.me/58TUNUMERO" target="_blank" rel="noopener">💬 Contactar por WhatsApp</a>
+         href="https://wa.me/584121640685" target="_blank" rel="noopener">💬 Contactar por WhatsApp</a>
       <button class="btn-secondary" onclick="doLogout()">🔒 Cerrar sesión</button>
     </div>
   </div>
@@ -694,8 +701,8 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 /* ════════════════════════════════════════
    CONSTANTES
 ════════════════════════════════════════ */
-const PRECIO_KM  = 0.40;
-const PRECIO_MIN = 0.07;
+const PRECIO_KM  = 0.50;
+const PRECIO_MIN = 0.09;
 const COMISION   = 0.10;
 const MAX_STOPS  = 5;
 const HISTORY_PER_PAGE = 50;
@@ -1667,12 +1674,12 @@ function clearHistory() {
 // TODO: reemplaza esto con las credenciales de TU proyecto Firebase.
 // Se consiguen en Firebase Console → ⚙️ Configuración del proyecto → "Tus apps" → SDK setup and configuration.
 const firebaseConfig = {
-    apiKey:            "TU_FIREBASE_API_KEY",
-    authDomain:        "tu-proyecto.firebaseapp.com",
-    projectId:         "tu-proyecto",
-    storageBucket:     "tu-proyecto.appspot.com",
-    messagingSenderId: "000000000000",
-    appId:             "1:000000000000:web:xxxxxxxxxxxxxxxx"
+    apiKey:            "AIzaSyCIi8sOKQEhMmZAEs-BEFgfCbHONQA_DFY",
+    authDomain:        "tarifapp-vzla.firebaseapp.com",
+    projectId:         "tarifapp-vzla",
+    storageBucket:     "tarifapp-vzla.firebasestorage.app",
+    messagingSenderId: "848849404178",
+    appId:             "1:848849404178:web:28c42850bce69521b833cb"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1731,6 +1738,13 @@ function traducirErrorAuth(code) {
 
 function doLogout() {
     auth.signOut();
+}
+
+function togglePwd(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁️';
 }
 
 /* ════════════════════════════════════════

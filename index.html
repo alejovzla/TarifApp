@@ -337,6 +337,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
     </div>
     <div class="apikey-error" id="authError"></div>
     <button class="apikey-save-btn" id="authSubmitBtn" onclick="submitAuth()">✓ Iniciar sesión</button>
+    <span class="apikey-cancel-link" id="forgotPasswordLink" onclick="sendPasswordReset()">¿Olvidaste tu contraseña?</span>
   </div>
 </div>
 
@@ -573,6 +574,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
     </div>
 
     <button class="btn-finish" onclick="finishTrip()">🏁 Finalizar Viaje</button>
+    <button class="btn-secondary" onclick="cancelTrip()">✕ Cancelar viaje</button>
   </div>
 </div>
 
@@ -620,7 +622,11 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       </table>
     </div>
 
+    <button class="btn-primary" style="margin-top:12px" onclick="shareInvoice()">📤 Compartir factura</button>
     <button class="btn-secondary" onclick="resetApp()">← Nuevo Viaje</button>
+    <div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:14px;line-height:1.5">
+      Tarifa calculada por TarifApp, no es un taxímetro oficial certificado.
+    </div>
   </div>
 </div>
 
@@ -639,6 +645,27 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       </div>
       <a class="btn-primary" style="display:block;text-decoration:none;box-sizing:border-box"
          href="https://wa.me/584121640685" target="_blank" rel="noopener">💬 Contactar por WhatsApp</a>
+      <button class="btn-secondary" onclick="doLogout()">🔒 Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SCREEN 5 — VERIFICA TU CORREO ══ -->
+<div id="screenVerifyEmail" class="screen">
+  <div class="header">
+    <div class="header-logo">📧</div>
+    <h1>Verifica tu correo</h1>
+    <p>Confirma tu cuenta para poder usar TarifApp</p>
+  </div>
+  <div class="container">
+    <div class="card" style="text-align:center;padding:28px 18px">
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:18px">
+        Te enviamos un enlace de confirmación por correo. Ábrelo desde tu bandeja de entrada (revisa spam si no
+        aparece) y luego vuelve aquí.
+      </div>
+      <button class="btn-primary" onclick="checkEmailVerified()">✓ Ya verifiqué mi correo</button>
+      <button class="btn-secondary" onclick="resendVerificationEmail()">📧 Reenviar correo</button>
       <button class="btn-secondary" onclick="doLogout()">🔒 Cerrar sesión</button>
     </div>
   </div>
@@ -1358,6 +1385,11 @@ function finishTrip() {
     showScreen('screenInvoice');
 }
 
+function cancelTrip() {
+    if (!confirm('¿Cancelar este viaje? No se va a cobrar ni se guarda en el historial.')) return;
+    resetApp();
+}
+
 function generateInvoice() {
     const veh = VEHICULOS[trip.vehiculo];
     const dem = DEMANDA_CFG[trip.demanda];
@@ -1409,6 +1441,22 @@ function generateInvoice() {
         vehiculo: trip.vehiculo, demanda: trip.demanda,
         finalUSD: rFinal, finalVES: rVES, realKm: rKm, realMin: rMin
     });
+}
+
+function shareInvoice() {
+    const subtitle = document.getElementById('invSubtitle').textContent;
+    const usd = document.getElementById('invFinalUSD').textContent;
+    const ves = document.getElementById('invFinalVES').textContent;
+    const km  = document.getElementById('cmpKm2').textContent.split('→')[0].trim();
+    const min = document.getElementById('cmpMin2').textContent.split('→')[0].trim();
+    const text = `🧾 Factura TarifApp\n${subtitle}\n\nTotal: $${usd} (${ves})\nRecorrido: ${km} · ${min}\n\n`
+               + `Tarifa calculada por TarifApp, no es un taxímetro oficial certificado.`;
+
+    if (navigator.share) {
+        navigator.share({ title: 'Factura TarifApp', text }).catch(() => {});
+    } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
 }
 
 /* ════════════════════════════════════════
@@ -1673,6 +1721,7 @@ function switchAuthTab(mode) {
     document.getElementById('authFieldsRegister').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('authTitle').textContent = mode === 'login' ? '👤 Inicia sesión' : '📝 Crea tu cuenta';
     document.getElementById('authSubmitBtn').textContent = mode === 'login' ? '✓ Iniciar sesión' : '✓ Crear cuenta';
+    document.getElementById('forgotPasswordLink').style.display = mode === 'login' ? 'block' : 'none';
     document.getElementById('authError').style.display = 'none';
 }
 
@@ -1691,6 +1740,7 @@ async function submitAuth() {
                 name, phone, email, paidUntil: null, tripCount: 0,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
+            await cred.user.sendEmailVerification();
         } else {
             await auth.signInWithEmailAndPassword(email, pass);
         }
@@ -1700,9 +1750,28 @@ async function submitAuth() {
     }
 }
 
+async function sendPasswordReset() {
+    const email = document.getElementById('authEmail').value.trim();
+    const err   = document.getElementById('authError');
+    err.style.display = 'none';
+    if (!email) {
+        err.textContent = '⚠️ Escribe tu correo arriba y luego toca "¿Olvidaste tu contraseña?"';
+        err.style.display = 'block';
+        return;
+    }
+    try {
+        await auth.sendPasswordResetEmail(email);
+        alert('Te enviamos un correo a ' + email + ' con un enlace para restablecer tu contraseña.');
+    } catch (e) {
+        err.textContent = '⚠️ ' + traducirErrorAuth(e.code);
+        err.style.display = 'block';
+    }
+}
+
 function traducirErrorAuth(code) {
     const m = {
         'auth/invalid-email':        'Correo inválido.',
+        'auth/missing-email':        'Escribe tu correo primero.',
         'auth/email-already-in-use': 'Ese correo ya tiene una cuenta.',
         'auth/weak-password':        'La contraseña debe tener al menos 6 caracteres.',
         'auth/user-not-found':       'No existe una cuenta con ese correo.',
@@ -1788,9 +1857,26 @@ function toggleTheme() {
 applyTheme(localStorage.getItem('tarifapp_theme') || 'dark');
 loadHistory();
 
+function resendVerificationEmail() {
+    const user = auth.currentUser;
+    if (!user) return;
+    user.sendEmailVerification()
+        .then(() => alert('Correo reenviado a ' + user.email + '.'))
+        .catch(e => alert('No se pudo reenviar: ' + traducirErrorAuth(e.code)));
+}
+
+async function checkEmailVerified() {
+    const user = auth.currentUser;
+    if (!user) return;
+    await user.reload();
+    if (user.emailVerified) location.reload();
+    else alert('Todavía no verificamos tu correo. Revisa tu bandeja de entrada (y la carpeta de spam).');
+}
+
 auth.onAuthStateChanged(async user => {
     if (!user) { showAuthModal(); return; }
     hideAuthModal();
+    if (!user.emailVerified) { showScreen('screenVerifyEmail'); return; }
     try {
         const driverDoc = await db.collection('drivers').doc(user.uid).get();
         const paidUntil = driverDoc.data()?.paidUntil?.toDate?.() || null;

@@ -150,19 +150,6 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .pac-item-query{color:var(--text) !important;font-weight:600;font-size:14px !important}
 .pac-icon{display:none !important}
 
-/* ── DEMAND ── */
-.demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.demand-btn{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 4px;text-align:center;cursor:pointer;transition:all .2s}
-.demand-icon{font-size:20px;display:block}
-.demand-label{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-top:4px}
-.demand-mult{font-size:14px;font-weight:800;margin-top:2px;color:var(--text-muted)}
-.demand-btn.regular.selected{border-color:var(--accent);background:rgba(67,217,173,.10)}
-.demand-btn.regular.selected .demand-mult,.demand-btn.regular.selected .demand-label{color:var(--accent)}
-.demand-btn.alta.selected{border-color:var(--warning);background:rgba(255,179,71,.10)}
-.demand-btn.alta.selected .demand-mult,.demand-btn.alta.selected .demand-label{color:var(--warning)}
-.demand-btn.pico.selected{border-color:var(--danger);background:rgba(255,101,132,.10)}
-.demand-btn.pico.selected .demand-mult,.demand-btn.pico.selected .demand-label{color:var(--danger)}
-
 /* ── ESTIMATION PREVIEW ── */
 .est-preview{border-color:rgba(67,217,173,.25);text-align:center;padding:16px}
 .est-preview-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
@@ -455,28 +442,6 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       </div>
     </div>
 
-    <!-- Demanda -->
-    <div class="card">
-      <div class="section-title">Factor de Demanda</div>
-      <div class="demand-grid">
-        <div class="demand-btn regular selected" id="dem-regular" onclick="selectDemand('regular')">
-          <span class="demand-icon">☀️</span>
-          <div class="demand-label">Regular</div>
-          <div class="demand-mult">×1.0</div>
-        </div>
-        <div class="demand-btn alta" id="dem-alta" onclick="selectDemand('alta')">
-          <span class="demand-icon">🔥</span>
-          <div class="demand-label">Alta</div>
-          <div class="demand-mult">×1.5</div>
-        </div>
-        <div class="demand-btn pico" id="dem-pico" onclick="selectDemand('pico')">
-          <span class="demand-icon">⛈️</span>
-          <div class="demand-label">Pico/Lluvia</div>
-          <div class="demand-mult">×2.0</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Preview estimación -->
     <div class="card est-preview fade-up" id="estPreview" style="display:none">
       <div class="est-preview-label">Precio Estimado</div>
@@ -741,6 +706,7 @@ function initMap() {
     directionsService  = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: true,
+        preserveViewport: true,
         polylineOptions: { strokeColor: '#6099be', strokeWeight: 5, strokeOpacity: 0.85 }
     });
     directionsRenderer.setMap(gMap);
@@ -759,10 +725,27 @@ function centerMapOnUserLocation() {
             gMap.setCenter(latLng);
             gMap.setZoom(15);
             showLiveLocationMarker(latLng);
+            applyWeatherDemand(pos.coords.latitude, pos.coords.longitude);
         },
-        () => { /* permiso denegado o sin señal: se queda en el centro por defecto */ },
+        () => { /* permiso denegado o sin señal: se queda en el centro por defecto y demanda Regular */ },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
+}
+
+/* Códigos WMO de lluvia/tormenta que devuelve Open-Meteo en "weather_code" */
+const RAIN_WEATHER_CODES = new Set([51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99]);
+
+async function applyWeatherDemand(lat, lng) {
+    try {
+        const res  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code`);
+        const data = await res.json();
+        const code = data.current?.weather_code;
+        const temp = data.current?.temperature_2m;
+        demanda = RAIN_WEATHER_CODES.has(code) ? 'pico' : (temp >= 30 ? 'alta' : 'regular');
+    } catch (e) {
+        demanda = 'regular'; /* si falla la API, se queda en demanda Regular */
+    }
+    updateEstimationPreview();
 }
 
 function showLiveLocationMarker(position) {
@@ -968,13 +951,17 @@ function calcRoute() {
             routeMin = Math.round(totalS / 60);
             routePath = result.routes[0].overview_path || [];
 
-            /* El contenedor del mapa arranca con height:0 — hay que hacerlo visible
-               y avisarle a Google que se redibuje ANTES de encuadrar la ruta, si no,
-               calcula el zoom contra un mapa de 0px y queda demasiado alejado. */
+            /* El contenedor del mapa arranca con height:0 y anima a 250px en .35s
+               (ver CSS de #mapContainer). Si encuadramos la ruta antes de que esa
+               transición termine, Google mide un mapa casi de 0px de alto y el
+               zoom queda pegado muy alejado. Por eso esperamos a que la animación
+               termine antes de redibujar y encuadrar. */
             document.getElementById('mapContainer').classList.add('map-visible');
-            google.maps.event.trigger(gMap, 'resize');
             directionsRenderer.setDirections(result);
-            gMap.fitBounds(result.routes[0].bounds, 48);
+            setTimeout(() => {
+                google.maps.event.trigger(gMap, 'resize');
+                gMap.fitBounds(result.routes[0].bounds, 48);
+            }, 380);
 
             document.getElementById('inputKm').value   = routeKm.toFixed(1);
             document.getElementById('inputMin').value  = routeMin;
@@ -1241,12 +1228,6 @@ function selectVehicle(v) {
     document.querySelectorAll('.vehicle-btn').forEach(c => c.classList.remove('selected'));
     document.getElementById('veh-'+v).classList.add('selected');
     if (liveLocationMarker) liveLocationMarker.setIcon(mkVehicleIcon(vehiculo));
-    updateEstimationPreview();
-}
-function selectDemand(d) {
-    demanda = d;
-    document.querySelectorAll('.demand-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('dem-'+d).classList.add('selected');
     updateEstimationPreview();
 }
 function onManualInput() {

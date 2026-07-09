@@ -21,8 +21,8 @@
 }
 :root[data-theme="light"]{
   --primary:#3d7a9c;--primary-dark:#3d7a9c;--accent:#0f9d78;
-  --warning:#b8720a;--danger:#c4294f;--bg:#ffffff;--bg-card:#f4f4f4;
-  --bg-input:#ececec;--border:#d9d9d9;--text:#1a1a1a;--text-muted:#666666;
+  --warning:#b8720a;--danger:#c4294f;--bg:#ffffff;--bg-card:#e4e4e4;
+  --bg-input:#d8d8d8;--border:#c2c2c2;--text:#1a1a1a;--text-muted:#666666;
 }
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
@@ -300,15 +300,15 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 
 /* ── MODO CLARO — overrides de fondos/colores fijos que no usan variables ── */
 [data-theme="light"] #screenTaxi{background:#fafafa}
-[data-theme="light"] .taxi-header{background:linear-gradient(135deg,#f0f0f0,#ffffff)}
-[data-theme="light"] .taxi-stat-card{background:#f0f0f0}
-[data-theme="light"] .taxi-price-card{background:linear-gradient(160deg,#eef4f8,#ffffff);border-color:#6099be55}
-[data-theme="light"] .progress-wrap{background:#e6e6e6}
-[data-theme="light"] #screenInvoice .header{background:linear-gradient(135deg,#f0f0f0,#ffffff)}
-[data-theme="light"] .final-price-card{background:linear-gradient(160deg,#eef4f8,#ffffff)}
+[data-theme="light"] .taxi-header{background:linear-gradient(135deg,#e0e0e0,#f5f5f5)}
+[data-theme="light"] .taxi-stat-card{background:#e0e0e0}
+[data-theme="light"] .taxi-price-card{background:linear-gradient(160deg,#e3edf3,#f5f5f5);border-color:#6099be55}
+[data-theme="light"] .progress-wrap{background:#d4d4d4}
+[data-theme="light"] #screenInvoice .header{background:linear-gradient(135deg,#e0e0e0,#f5f5f5)}
+[data-theme="light"] .final-price-card{background:linear-gradient(160deg,#e3edf3,#f5f5f5)}
 [data-theme="light"] .diff-eq{background:rgba(0,0,0,.05)}
-[data-theme="light"] .settings-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:rgba(0,0,0,.65)}
-[data-theme="light"] .settings-btn:hover{background:rgba(0,0,0,.1)}
+[data-theme="light"] .settings-btn{background:rgba(0,0,0,.12);border-color:rgba(0,0,0,.28);color:rgba(0,0,0,.78)}
+[data-theme="light"] .settings-btn:hover{background:rgba(0,0,0,.18)}
 [data-theme="light"] .card,[data-theme="light"] .history-card{box-shadow:0 2px 12px rgba(0,0,0,.08)}
 </style>
 </head>

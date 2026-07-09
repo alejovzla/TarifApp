@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TarifApp — Taxímetro en Tiempo Real</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#5A52D5">
+<meta name="theme-color" content="#6099be">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +14,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --primary:#6C63FF;--primary-dark:#5A52D5;--accent:#43D9AD;
+  --primary:#6099be;--primary-dark:#6099be;--accent:#43D9AD;
   --warning:#FFB347;--danger:#FF6584;--bg:#0D0D1A;--bg-card:#13132A;
   --bg-input:#0A0A18;--border:#252545;--text:#E8E8F4;--text-muted:#7A7A9A;
   --radius:18px;--radius-sm:10px;
@@ -25,11 +25,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .screen{display:none}.screen.active{display:block}
 
 /* ── HEADER ── */
-.header{background:linear-gradient(135deg,#5A52D5,#7C3AED);padding:22px 20px 30px;text-align:center;position:relative;overflow:hidden}
+.header{background:#6099be;padding:22px 20px 30px;text-align:center;position:relative;overflow:hidden}
 .header::before,.header::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}
 .header::before{width:200px;height:200px;top:-70px;right:-40px}
 .header::after{width:130px;height:130px;bottom:-50px;left:-25px}
-.header-logo{font-size:38px;margin-bottom:4px}
+.header-logo{width:52px;height:52px;margin:0 auto 8px;display:block}
 .header h1{font-size:24px;font-weight:800;letter-spacing:-.5px}
 .header p{font-size:12px;opacity:.75;margin-top:3px}
 
@@ -41,26 +41,26 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* ── VEHICLE ── */
 .vehicle-row{display:flex;gap:10px}
 .vehicle-btn{flex:1;display:flex;align-items:center;gap:11px;border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:border-color .2s,background .2s;background:none;font-family:inherit;text-align:left}
-.vehicle-btn:hover{border-color:#6C63FF88}
-.vehicle-btn.selected{border-color:var(--primary);background:rgba(108,99,255,.10)}
+.vehicle-btn:hover{border-color:#6099be88}
+.vehicle-btn.selected{border-color:var(--primary);background:rgba(96,153,190,.10)}
 .vehicle-btn-icon{font-size:28px;flex-shrink:0}
 .vehicle-btn-name{font-size:14px;font-weight:700;color:var(--text)}
 .vehicle-btn-meta{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.5}
-.vehicle-btn.selected .vehicle-btn-meta{color:#9A94FF}
+.vehicle-btn.selected .vehicle-btn-meta{color:#90b8d2}
 
 /* ── BCV WIDGET ── */
 .bcv-card.loaded{border-color:rgba(67,217,173,.30)}
 .bcv-card.errored{border-color:rgba(255,179,71,.30)}
 .bcv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .bcv-title-col{display:flex;flex-direction:column;gap:2px}
-.bcv-official-link{font-size:10px;color:#6C63FF99;text-decoration:none}
+.bcv-official-link{font-size:10px;color:#6099be99;text-decoration:none}
 .bcv-official-link:hover{color:var(--primary)}
-.bcv-refresh-btn{background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);border-radius:8px;color:var(--primary);font-size:17px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
-.bcv-refresh-btn:hover{background:rgba(108,99,255,.22)}
+.bcv-refresh-btn{background:rgba(96,153,190,.12);border:1px solid rgba(96,153,190,.25);border-radius:8px;color:var(--primary);font-size:17px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.bcv-refresh-btn:hover{background:rgba(96,153,190,.22)}
 .bcv-refresh-btn:disabled{opacity:.4;cursor:not-allowed}
 .bcv-refresh-btn.spinning{animation:spin .8s linear infinite}
 .bcv-state-loading{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:13px}
-.spinner{width:16px;height:16px;border:2px solid rgba(108,99,255,.2);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner{width:16px;height:16px;border:2px solid rgba(96,153,190,.2);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 .bcv-state-ok{display:none}
 .bcv-rate-row{display:flex;align-items:baseline;gap:7px}
 .bcv-lock-icon{font-size:12px;opacity:.6}
@@ -88,12 +88,12 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 
 /* ════ YUMMY-STYLE STOPS ════ */
 .stops-items{position:relative;padding-left:34px;margin-bottom:10px}
-.stops-items::before{content:'';position:absolute;left:12px;top:28px;bottom:28px;width:2px;background:linear-gradient(to bottom,rgba(67,217,173,.5),rgba(108,99,255,.3));border-radius:2px;pointer-events:none}
+.stops-items::before{content:'';position:absolute;left:12px;top:28px;bottom:28px;width:2px;background:linear-gradient(to bottom,rgba(67,217,173,.5),rgba(96,153,190,.3));border-radius:2px;pointer-events:none}
 .stop-item{position:relative;display:flex;align-items:center;gap:8px;padding:4px 0}
 .stop-dot{position:absolute;left:-28px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;z-index:2;border:2.5px solid var(--bg-card);flex-shrink:0}
 .stop-dot.origin{background:#43D9AD;box-shadow:0 0 0 3px rgba(67,217,173,.2)}
 .stop-dot.dest{background:#FF6584;box-shadow:0 0 0 3px rgba(255,101,132,.2)}
-.stop-dot.waypoint{background:#6C63FF;width:10px;height:10px;left:-26px;box-shadow:0 0 0 3px rgba(108,99,255,.2)}
+.stop-dot.waypoint{background:#6099be;width:10px;height:10px;left:-26px;box-shadow:0 0 0 3px rgba(96,153,190,.2)}
 .stop-input-wrap{flex:1;position:relative}
 .stop-input{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-family:inherit;padding:11px 36px 11px 12px;outline:none;transition:border-color .2s}
 .stop-input:focus{border-color:var(--primary)}
@@ -106,7 +106,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .stop-action-inline.remove{color:var(--danger)}
 .stop-action-inline:disabled{opacity:.4;cursor:not-allowed}
 .stop-input.with-action{padding-right:68px}
-.stop-add-btn{width:100%;background:none;border:1.5px dashed rgba(108,99,255,.28);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;font-weight:700;padding:9px 14px;cursor:pointer;font-family:inherit;margin-bottom:8px;transition:border-color .2s,color .2s}
+.stop-add-btn{width:100%;background:none;border:1.5px dashed rgba(96,153,190,.28);border-radius:var(--radius-sm);color:var(--text-muted);font-size:12px;font-weight:700;padding:9px 14px;cursor:pointer;font-family:inherit;margin-bottom:8px;transition:border-color .2s,color .2s}
 .stop-add-btn:hover{border-color:var(--primary);color:var(--primary)}
 .map-opt-btn{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:13px;font-weight:600;padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .2s,color .2s;margin-bottom:8px;font-family:inherit}
 .map-opt-btn:hover{border-color:var(--primary);color:var(--primary)}
@@ -116,15 +116,15 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 #mapContainer.map-visible{height:250px;border-color:var(--border)}
 .gm-style .gm-style-cc a{color:var(--text-muted) !important}
 .map-hint{font-size:11px;color:var(--text-muted);text-align:center;padding:4px 0 2px}
-.route-info-bar{display:none;align-items:center;justify-content:center;background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.20);border-radius:var(--radius-sm);padding:10px 14px;margin-top:8px;gap:0}
+.route-info-bar{display:none;align-items:center;justify-content:center;background:rgba(96,153,190,.08);border:1px solid rgba(96,153,190,.20);border-radius:var(--radius-sm);padding:10px 14px;margin-top:8px;gap:0}
 .route-stat{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);flex:1;justify-content:center}
 .route-divider{width:1px;height:24px;background:var(--border)}
 .route-loading{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
 
 /* ── MAP WRAPPER + PIN MODE FULLSCREEN ── */
 .map-wrapper{position:relative;margin:8px 0}
-.map-style-toggle{position:absolute;bottom:78px;left:10px;z-index:10;background:rgba(13,13,26,.88);border:1px solid rgba(108,99,255,.4);border-radius:20px;color:var(--text);font-size:11px;font-weight:700;padding:5px 13px;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s;font-family:inherit;display:flex;align-items:center;gap:5px}
-.map-style-toggle:hover{background:rgba(108,99,255,.25)}
+.map-style-toggle{position:absolute;bottom:78px;left:10px;z-index:10;background:rgba(13,13,26,.88);border:1px solid rgba(96,153,190,.4);border-radius:20px;color:var(--text);font-size:11px;font-weight:700;padding:5px 13px;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.map-style-toggle:hover{background:rgba(96,153,190,.25)}
 .pin-crosshair-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:36px;pointer-events:none;z-index:15;display:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));margin-top:-4px}
 
 /* Pin top bar */
@@ -149,7 +149,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .pac-container{background:var(--bg-card) !important;border:1px solid var(--border) !important;border-radius:var(--radius-sm) !important;box-shadow:0 8px 32px rgba(0,0,0,.5) !important;font-family:'Segoe UI',system-ui,sans-serif !important;margin-top:2px}
 .pac-item{padding:10px 14px !important;cursor:pointer;border-top:1px solid var(--border) !important;color:var(--text-muted) !important;font-size:13px !important}
 .pac-item:first-child{border-top:none !important}
-.pac-item:hover,.pac-item-selected{background:rgba(108,99,255,.12) !important}
+.pac-item:hover,.pac-item-selected{background:rgba(96,153,190,.12) !important}
 .pac-item-query{color:var(--text) !important;font-weight:600;font-size:14px !important}
 .pac-icon{display:none !important}
 
@@ -175,8 +175,8 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .est-preview-warn{font-size:11px;color:#FFB34799;margin-top:3px}
 
 /* ── BUTTONS ── */
-.btn-primary{width:100%;background:linear-gradient(135deg,var(--primary),#7C3AED);color:#fff;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;letter-spacing:.5px;padding:16px;cursor:pointer;margin-top:16px;transition:transform .15s,box-shadow .15s,opacity .2s;box-shadow:0 4px 24px rgba(108,99,255,.35)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(108,99,255,.50)}
+.btn-primary{width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;letter-spacing:.5px;padding:16px;cursor:pointer;margin-top:16px;transition:transform .15s,box-shadow .15s,opacity .2s;box-shadow:0 4px 24px rgba(96,153,190,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(96,153,190,.50)}
 .btn-primary:active{transform:translateY(0)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn-start{background:linear-gradient(135deg,#1DB954,#17A34A);box-shadow:0 4px 24px rgba(29,185,84,.35)}
@@ -187,20 +187,20 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .history-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
 .history-summary-line{font-size:11px;color:var(--text-muted);margin-top:2px}
 .export-btns{display:flex;gap:6px}
-.export-btn{background:rgba(108,99,255,.10);border:1px solid rgba(108,99,255,.25);border-radius:8px;color:var(--primary);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;transition:background .2s;font-family:inherit}
-.export-btn:hover{background:rgba(108,99,255,.22)}
+.export-btn{background:rgba(96,153,190,.10);border:1px solid rgba(96,153,190,.25);border-radius:8px;color:var(--primary);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;transition:background .2s;font-family:inherit}
+.export-btn:hover{background:rgba(96,153,190,.22)}
 .export-btn.csv{background:rgba(67,217,173,.10);border-color:rgba(67,217,173,.25);color:var(--accent)}
 .export-btn.csv:hover{background:rgba(67,217,173,.22)}
 .history-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .history-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .history-table{width:100%;min-width:480px;border-collapse:collapse}
-.history-table th{background:rgba(108,99,255,.10);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);padding:10px 8px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--border)}
+.history-table th{background:rgba(96,153,190,.10);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);padding:10px 8px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--border)}
 .history-table th:first-child{text-align:left;padding-left:14px}
 .history-table td{font-size:12px;padding:9px 8px;border-bottom:1px solid rgba(37,37,69,.5);text-align:center;color:var(--text);vertical-align:middle}
 .history-table td:first-child{text-align:left;padding-left:14px;color:var(--text-muted);font-size:11px}
 .history-table tr:last-child td{border-bottom:none}
-.history-table tr:hover td{background:rgba(108,99,255,.05)}
-.history-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(108,99,255,.15);border-radius:6px;width:24px;height:20px;font-size:10px;font-weight:800;color:#9A94FF}
+.history-table tr:hover td{background:rgba(96,153,190,.05)}
+.history-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(96,153,190,.15);border-radius:6px;width:24px;height:20px;font-size:10px;font-weight:800;color:#90b8d2}
 .history-empty{text-align:center;color:var(--text-muted);font-size:13px;padding:28px;font-style:italic}
 .history-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--border)}
 .history-total-cell{text-align:center;padding:10px 8px}
@@ -219,7 +219,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .taxi-trip-info{display:flex;flex-direction:column;gap:2px}
 .taxi-trip-title{font-size:13px;font-weight:700;color:var(--text)}
 .taxi-trip-est{font-size:11px;color:var(--text-muted)}
-.taxi-est-price{font-size:14px;font-weight:800;color:#9A94FF}
+.taxi-est-price{font-size:14px;font-weight:800;color:#90b8d2}
 .taxi-body{padding:16px 14px 100px;max-width:500px;margin:0 auto}
 .gps-status-bar{display:flex;align-items:center;gap:9px;background:rgba(67,217,173,.07);border:1px solid rgba(67,217,173,.18);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:12px;font-size:12px}
 .gps-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:gpsBlip 1.2s ease-in-out infinite}
@@ -234,7 +234,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .taxi-stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 .taxi-stat-card.time .taxi-stat-value{color:var(--primary)}
 .taxi-stat-card.km   .taxi-stat-value{color:var(--warning)}
-.taxi-price-card{background:linear-gradient(160deg,#18183A,#0F0F28);border:1px solid #6C63FF55;border-radius:var(--radius);padding:22px 16px;text-align:center;position:relative;overflow:hidden;margin-bottom:12px}
+.taxi-price-card{background:linear-gradient(160deg,#18183A,#0F0F28);border:1px solid #6099be55;border-radius:var(--radius);padding:22px 16px;text-align:center;position:relative;overflow:hidden;margin-bottom:12px}
 .taxi-price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent))}
 .taxi-price-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
 .taxi-usd{font-size:68px;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-3px}
@@ -263,7 +263,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 #screenInvoice .header{background:linear-gradient(135deg,#1a1a3a,#13132A);padding:18px 20px 24px}
 .invoice-body{padding:0 14px 80px;max-width:500px;margin:0 auto}
 .invoice-trip-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.trip-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);border-radius:20px;font-size:11px;font-weight:700;color:#9A94FF;padding:4px 10px}
+.trip-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(96,153,190,.12);border:1px solid rgba(96,153,190,.25);border-radius:20px;font-size:11px;font-weight:700;color:#90b8d2;padding:4px 10px}
 .cmp-table{width:100%;border-collapse:collapse;margin-top:4px}
 .cmp-table th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:6px 8px;text-align:right}
 .cmp-table th:first-child{text-align:left}
@@ -271,7 +271,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .cmp-table td:first-child{text-align:left;color:var(--text-muted);font-size:12px}
 .cmp-table tr:last-child td{border-bottom:none}
 .cmp-table .total-row td{font-size:15px;font-weight:800;border-top:2px solid var(--border);padding-top:12px}
-.cmp-table .total-row td:nth-child(2){color:#9A94FF}
+.cmp-table .total-row td:nth-child(2){color:#90b8d2}
 .cmp-table .total-row td:nth-child(3){color:var(--accent)}
 .diff-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px}
 .diff-up{background:rgba(255,179,71,.15);color:var(--warning)}
@@ -305,17 +305,17 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .apikey-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;max-width:440px;width:100%}
 .apikey-title{font-size:18px;font-weight:800;margin-bottom:6px}
 .apikey-sub{font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.6}
-.apikey-steps{font-size:11px;color:var(--text-muted);background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.18);border-radius:8px;padding:12px 14px;margin-bottom:14px;line-height:2}
+.apikey-steps{font-size:11px;color:var(--text-muted);background:rgba(96,153,190,.08);border:1px solid rgba(96,153,190,.18);border-radius:8px;padding:12px 14px;margin-bottom:14px;line-height:2}
 .apikey-input{width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:'Segoe UI',system-ui,sans-serif;padding:12px 14px;outline:none;transition:border-color .2s;margin-bottom:6px;letter-spacing:.3px}
 .apikey-input:focus{border-color:var(--primary)}
 .apikey-error{font-size:11px;color:var(--danger);margin-bottom:10px;display:none}
-.apikey-save-btn{width:100%;background:linear-gradient(135deg,var(--primary),#7C3AED);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;padding:13px;cursor:pointer;font-family:inherit;margin-bottom:10px}
+.apikey-save-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;padding:13px;cursor:pointer;font-family:inherit;margin-bottom:10px}
 .apikey-save-btn:hover{opacity:.9}
 .apikey-cancel-link{font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline;text-align:center;display:block}
 .apikey-cancel-link:hover{color:var(--text)}
 .settings-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:rgba(255,255,255,.65);font-size:11px;padding:4px 11px;cursor:pointer;font-family:inherit;margin-top:8px;transition:background .2s}
 .settings-btn:hover{background:rgba(255,255,255,.16)}
-.settings-btn.tab-active{background:rgba(108,99,255,.4);color:#fff}
+.settings-btn.tab-active{background:rgba(96,153,190,.4);color:#fff}
 .pwd-wrap{position:relative}
 .apikey-input.has-toggle{padding-right:42px}
 .pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);padding:6px;line-height:1}
@@ -353,7 +353,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 <!-- ══ SCREEN 1 — ESTIMACIÓN ══ -->
 <div id="screenEstimation" class="screen active">
   <div class="header">
-    <div class="header-logo">🚀</div>
+    <img class="header-logo" src="icon-mark.png" alt="TarifApp">
     <h1>TarifApp</h1>
     <p>Taxímetro en Tiempo Real · Venezuela</p>
     <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap">
@@ -764,6 +764,7 @@ let trip = {
 /* GPS */
 let gpsWatchId    = null;
 let gpsMarker     = null;
+let liveLocationMarker = null;
 let routePath     = [];
 let deviationSegs = [];
 let isOffRoute    = false;
@@ -791,7 +792,7 @@ function initMap() {
     directionsService  = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: true,
-        polylineOptions: { strokeColor: '#6C63FF', strokeWeight: 5, strokeOpacity: 0.85 }
+        polylineOptions: { strokeColor: '#6099be', strokeWeight: 5, strokeOpacity: 0.85 }
     });
     directionsRenderer.setMap(gMap);
     gMap.addListener('click', onMapClick);
@@ -805,12 +806,23 @@ function centerMapOnUserLocation() {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
         pos => {
-            gMap.setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            const latLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            gMap.setCenter(latLng);
             gMap.setZoom(15);
+            showLiveLocationMarker(latLng);
         },
         () => { /* permiso denegado o sin señal: se queda en el centro por defecto */ },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
+}
+
+function showLiveLocationMarker(position) {
+    if (trip.running) return; // durante el viaje, el marcador del GPS en tiempo real ya cubre esto
+    if (liveLocationMarker) liveLocationMarker.setMap(null);
+    liveLocationMarker = new google.maps.Marker({
+        position, map: gMap,
+        icon: mkVehicleIcon(vehiculo), zIndex: 998, title: 'Tu posición'
+    });
 }
 
 /* ════════════════════════════════════════
@@ -925,7 +937,7 @@ function setStopPosition(stopId, position, address) {
     const idx      = stops.indexOf(stop);
     const isOrigin = idx === 0;
     const isDest   = idx === stops.length - 1;
-    const color    = isOrigin ? '#43D9AD' : (isDest ? '#FF6584' : '#6C63FF');
+    const color    = isOrigin ? '#43D9AD' : (isDest ? '#FF6584' : '#6099be');
     const label    = String.fromCharCode(65 + idx);
 
     stop.marker = new google.maps.Marker({
@@ -958,7 +970,7 @@ function refreshMarkerLabels() {
         if (!stop.marker) return;
         const isOrigin = idx === 0;
         const isDest   = idx === stops.length - 1;
-        const color    = isOrigin ? '#43D9AD' : (isDest ? '#FF6584' : '#6C63FF');
+        const color    = isOrigin ? '#43D9AD' : (isDest ? '#FF6584' : '#6099be');
         const label    = String.fromCharCode(65 + idx);
         stop.marker.setIcon(mkMarkerIcon(color));
         stop.marker.setLabel({ text: label, color: '#fff', fontWeight: '900', fontSize: '11px' });
@@ -1133,7 +1145,7 @@ function requestGPSForStop(stopId) {
 
 function mkVehicleIcon(veh) {
     const emoji = veh === 'moto' ? '🏍️' : '🚗';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#6C63FF" stroke="white" stroke-width="2.5" opacity=".93"/><text x="24" y="32" font-size="22" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,serif">${emoji}</text></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#000000" stroke="white" stroke-width="2.5" opacity=".93"/><text x="24" y="32" font-size="22" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,serif">${emoji}</text></svg>`;
     return {
         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
         scaledSize: new google.maps.Size(48, 48),
@@ -1144,6 +1156,7 @@ function mkVehicleIcon(veh) {
 function startGPSTracking() {
     if (!navigator.geolocation) { setGPSStatus('off', 'GPS no disponible'); return; }
     setGPSStatus('on', 'Conectando GPS…');
+    if (liveLocationMarker) { liveLocationMarker.setMap(null); liveLocationMarker = null; }
     if (gpsMarker) gpsMarker.setMap(null);
     const startPos = stops[0]?.position || gMap.getCenter();
     gpsMarker = new google.maps.Marker({
@@ -1282,6 +1295,7 @@ function selectVehicle(v) {
     vehiculo = v;
     document.querySelectorAll('.vehicle-btn').forEach(c => c.classList.remove('selected'));
     document.getElementById('veh-'+v).classList.add('selected');
+    if (liveLocationMarker) liveLocationMarker.setIcon(mkVehicleIcon(vehiculo));
     updateEstimationPreview();
 }
 function selectDemand(d) {
@@ -1495,7 +1509,7 @@ function renderHistory() {
     document.getElementById('historyTotals').innerHTML = `
         <div class="history-total-cell">
             <div class="htc-label">Total carreras</div>
-            <div class="htc-value" style="color:#9A94FF">${total}</div>
+            <div class="htc-value" style="color:#90b8d2">${total}</div>
         </div>
         <div class="history-total-cell">
             <div class="htc-label">KM Recorridos</div>
@@ -1587,14 +1601,14 @@ function exportHistoryPDF() {
         <title>TarifApp — Historial</title>
         <style>
             body{font-family:Arial,sans-serif;font-size:12px;color:#222;padding:20px}
-            h1{font-size:20px;color:#5A52D5;margin-bottom:4px}
+            h1{font-size:20px;color:#6099be;margin-bottom:4px}
             .meta{color:#666;font-size:11px;margin-bottom:16px}
             .summary{display:flex;gap:24px;margin-bottom:20px;flex-wrap:wrap}
             .sum-box{background:#f4f4ff;border:1px solid #ddd;border-radius:8px;padding:12px 18px;min-width:130px}
             .sum-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px}
-            .sum-val{font-size:22px;font-weight:900;color:#5A52D5;margin-top:3px}
+            .sum-val{font-size:22px;font-weight:900;color:#6099be;margin-top:3px}
             table{width:100%;border-collapse:collapse;font-size:11px}
-            th{background:#5A52D5;color:white;padding:8px;text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+            th{background:#6099be;color:white;padding:8px;text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
             td{padding:7px 8px;border-bottom:1px solid #eee;vertical-align:middle}
             tr:nth-child(even) td{background:#f9f9ff}
             @media print{button{display:none}}
@@ -1612,7 +1626,7 @@ function exportHistoryPDF() {
             <thead><tr><th>Fecha y Hora</th><th># Carrera</th><th>Costo USD</th><th>Costo Bs.</th><th>Recorrido KM</th><th>Tiempo</th><th>Vehículo</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
-        <br><button onclick="window.print()" style="background:#5A52D5;color:white;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:13px">🖨️ Imprimir / Guardar PDF</button>
+        <br><button onclick="window.print()" style="background:#6099be;color:white;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:13px">🖨️ Imprimir / Guardar PDF</button>
         </body></html>`);
     win.document.close();
 }
@@ -1649,6 +1663,7 @@ function resetApp() {
     document.getElementById('mapHint').textContent = 'Escribe una dirección o toca el mapa para colocar puntos';
     initStops();
     showScreen('screenEstimation');
+    centerMapOnUserLocation();
 }
 
 function fmtVes(n) {

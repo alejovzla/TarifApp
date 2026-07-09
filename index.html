@@ -15,8 +15,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --primary:#6099be;--primary-dark:#6099be;--accent:#43D9AD;
-  --warning:#FFB347;--danger:#FF6584;--bg:#0D0D1A;--bg-card:#13132A;
-  --bg-input:#0A0A18;--border:#252545;--text:#E8E8F4;--text-muted:#7A7A9A;
+  --warning:#FFB347;--danger:#FF6584;--bg:#1a1a1a;--bg-card:#232323;
+  --bg-input:#121212;--border:#3a3a3a;--text:#E8E8F4;--text-muted:#7A7A9A;
   --radius:18px;--radius-sm:10px;
 }
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
@@ -29,7 +29,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .header::before,.header::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}
 .header::before{width:200px;height:200px;top:-70px;right:-40px}
 .header::after{width:130px;height:130px;bottom:-50px;left:-25px}
-.header-logo{width:52px;height:52px;margin:0 auto 8px;display:block}
+.header-logo{width:220px;height:auto;margin:0 auto 6px;display:block}
 .header h1{font-size:24px;font-weight:800;letter-spacing:-.5px}
 .header p{font-size:12px;opacity:.75;margin-top:3px}
 
@@ -214,8 +214,8 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .page-info{font-size:11px;color:var(--text-muted);flex:1;text-align:center}
 
 /* ════ TAXÍMETRO ════ */
-#screenTaxi{background:#080814;min-height:100vh}
-.taxi-header{background:linear-gradient(135deg,#13132A,#0D0D1A);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+#screenTaxi{background:#141414;min-height:100vh}
+.taxi-header{background:linear-gradient(135deg,#232323,#1a1a1a);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
 .taxi-trip-info{display:flex;flex-direction:column;gap:2px}
 .taxi-trip-title{font-size:13px;font-weight:700;color:var(--text)}
 .taxi-trip-est{font-size:11px;color:var(--text-muted)}
@@ -228,13 +228,13 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .gps-status-text{color:var(--text-muted);flex:1}
 @keyframes gpsBlip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
 .taxi-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.taxi-stat-card{background:#0F0F24;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.taxi-stat-card{background:#262626;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
 .taxi-stat-icon{font-size:20px;margin-bottom:4px}
 .taxi-stat-value{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1}
 .taxi-stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 .taxi-stat-card.time .taxi-stat-value{color:var(--primary)}
 .taxi-stat-card.km   .taxi-stat-value{color:var(--warning)}
-.taxi-price-card{background:linear-gradient(160deg,#18183A,#0F0F28);border:1px solid #6099be55;border-radius:var(--radius);padding:22px 16px;text-align:center;position:relative;overflow:hidden;margin-bottom:12px}
+.taxi-price-card{background:linear-gradient(160deg,#2e2e2e,#1f1f1f);border:1px solid #6099be55;border-radius:var(--radius);padding:22px 16px;text-align:center;position:relative;overflow:hidden;margin-bottom:12px}
 .taxi-price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent))}
 .taxi-price-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
 .taxi-usd{font-size:68px;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-3px}
@@ -242,7 +242,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .taxi-ves{font-size:22px;font-weight:800;color:var(--warning);margin-top:6px}
 @keyframes pricePulse{0%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 24px rgba(67,217,173,.7)}100%{text-shadow:0 0 0 transparent}}
 .pulse{animation:pricePulse .5s ease}
-.progress-wrap{background:#13132A;border-radius:20px;height:6px;margin-bottom:4px;overflow:hidden}
+.progress-wrap{background:#232323;border-radius:20px;height:6px;margin-bottom:4px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--primary));border-radius:20px;transition:width .8s ease,background .5s}
 .progress-fill.over{background:linear-gradient(90deg,var(--warning),var(--danger))}
 .progress-label{font-size:10px;color:var(--text-muted);text-align:right;margin-bottom:12px}
@@ -260,7 +260,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .btn-finish:active{transform:translateY(0)}
 
 /* ════ FACTURA ════ */
-#screenInvoice .header{background:linear-gradient(135deg,#1a1a3a,#13132A);padding:18px 20px 24px}
+#screenInvoice .header{background:linear-gradient(135deg,#262626,#1a1a1a);padding:18px 20px 24px}
 .invoice-body{padding:0 14px 80px;max-width:500px;margin:0 auto}
 .invoice-trip-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 .trip-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(96,153,190,.12);border:1px solid rgba(96,153,190,.25);border-radius:20px;font-size:11px;font-weight:700;color:#90b8d2;padding:4px 10px}
@@ -276,21 +276,12 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .diff-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px}
 .diff-up{background:rgba(255,179,71,.15);color:var(--warning)}
 .diff-eq{background:rgba(255,255,255,.06);color:var(--text-muted)}
-.final-price-card{background:linear-gradient(160deg,#18183A,#0F0F28);border:1px solid rgba(67,217,173,.3);border-radius:var(--radius);padding:20px;text-align:center;position:relative;overflow:hidden}
+.final-price-card{background:linear-gradient(160deg,#2e2e2e,#1f1f1f);border:1px solid rgba(67,217,173,.3);border-radius:var(--radius);padding:20px;text-align:center;position:relative;overflow:hidden}
 .final-price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent))}
 .final-usd{font-size:52px;font-weight:900;color:var(--accent);letter-spacing:-2px;line-height:1}
 .final-usd sup{font-size:22px;vertical-align:super;font-weight:700;letter-spacing:0}
 .final-ves{font-size:20px;font-weight:800;color:var(--warning);margin-top:6px}
 .final-extra{margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--warning)}
-.earnings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.earnings-box{border-radius:var(--radius-sm);padding:16px;text-align:center}
-.earnings-box.platform{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.2)}
-.earnings-box.driver{background:rgba(67,217,173,.08);border:1px solid rgba(67,217,173,.2)}
-.earn-pct{font-size:30px;font-weight:900;line-height:1}
-.earn-label{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-top:3px}
-.earn-amount{font-size:17px;font-weight:800;margin-top:7px}
-.earnings-box.platform .earn-pct,.earnings-box.platform .earn-amount{color:var(--danger)}
-.earnings-box.driver   .earn-pct,.earnings-box.driver   .earn-amount{color:var(--accent)}
 .btn-secondary{width:100%;background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);font-size:14px;font-family:inherit;padding:13px;cursor:pointer;margin-top:12px;transition:border-color .2s,color .2s}
 .btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
 
@@ -353,8 +344,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 <!-- ══ SCREEN 1 — ESTIMACIÓN ══ -->
 <div id="screenEstimation" class="screen active">
   <div class="header">
-    <img class="header-logo" src="icon-mark.png" alt="TarifApp">
-    <h1>TarifApp</h1>
+    <img class="header-logo" src="logo-full.png" alt="TarifApp">
     <p>Taxímetro en Tiempo Real · Venezuela</p>
     <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap">
       <button class="settings-btn" id="installBtn" onclick="installApp()" style="display:none">⬇️ Instalar App</button>
@@ -651,22 +641,6 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
       </table>
     </div>
 
-    <div class="card fade-up d3">
-      <div class="section-title">💰 Desglose del Conductor</div>
-      <div class="earnings-grid">
-        <div class="earnings-box platform">
-          <div class="earn-pct">10%</div>
-          <div class="earn-label">Plataforma</div>
-          <div class="earn-amount" id="invPlatform">$0.00</div>
-        </div>
-        <div class="earnings-box driver">
-          <div class="earn-pct">90%</div>
-          <div class="earn-label">Conductor</div>
-          <div class="earn-amount" id="invDriver">$0.00</div>
-        </div>
-      </div>
-    </div>
-
     <button class="btn-secondary" onclick="resetApp()">← Nuevo Viaje</button>
   </div>
 </div>
@@ -703,7 +677,6 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 ════════════════════════════════════════ */
 const PRECIO_KM  = 0.50;
 const PRECIO_MIN = 0.09;
-const COMISION   = 0.10;
 const MAX_STOPS  = 5;
 const HISTORY_PER_PAGE = 50;
 
@@ -1459,8 +1432,6 @@ function generateInvoice() {
     document.getElementById('cmpTot2').innerHTML='$'+rFinal.toFixed(2)+(diffUSD>0.005?` ${tag(diffUSD,true)}`:'');
     document.getElementById('cmpVes1').textContent=fmtVes(eVES)+' Bs.';
     document.getElementById('cmpVes2').textContent=fmtVes(rVES)+' Bs.';
-    document.getElementById('invPlatform').textContent='$'+(rFinal*COMISION).toFixed(2);
-    document.getElementById('invDriver').textContent='$'+(rFinal*(1-COMISION)).toFixed(2);
 
     /* Registrar en historial */
     recordTrip({
@@ -1486,6 +1457,15 @@ function recordTrip(data) {
     historyPage = Math.max(0, Math.ceil(tripHistory.length / HISTORY_PER_PAGE) - 1);
     saveHistory();
     renderHistory();
+    incrementTripCount();
+}
+
+function incrementTripCount() {
+    const user = auth.currentUser;
+    if (!user) return;
+    db.collection('drivers').doc(user.uid).update({
+        tripCount: firebase.firestore.FieldValue.increment(1)
+    }).catch(() => { /* si falla (sin conexión, etc.) no interrumpe el flujo de la app */ });
 }
 
 function renderHistory() {
@@ -1501,10 +1481,9 @@ function renderHistory() {
     const totalUSD    = tripHistory.reduce((s,t) => s + t.costUSD, 0);
     const totalKm     = tripHistory.reduce((s,t) => s + t.distKm, 0);
     const totalMin    = tripHistory.reduce((s,t) => s + t.durMin, 0);
-    const driverEarn  = totalUSD * (1 - COMISION);
 
     document.getElementById('historySummary').textContent =
-        `${total} carrera${total>1?'s':''} · $${totalUSD.toFixed(2)} total · $${driverEarn.toFixed(2)} conductor`;
+        `${total} carrera${total>1?'s':''} · $${totalUSD.toFixed(2)} total`;
 
     document.getElementById('historyTotals').innerHTML = `
         <div class="history-total-cell">
@@ -1516,8 +1495,8 @@ function renderHistory() {
             <div class="htc-value" style="color:var(--warning)">${totalKm.toFixed(1)}</div>
         </div>
         <div class="history-total-cell">
-            <div class="htc-label">Ganancias (90%)</div>
-            <div class="htc-value" style="color:var(--accent)">$${driverEarn.toFixed(2)}</div>
+            <div class="htc-label">Total Cobrado</div>
+            <div class="htc-value" style="color:var(--accent)">$${totalUSD.toFixed(2)}</div>
         </div>`;
 
     let rows = '';
@@ -1585,7 +1564,6 @@ function exportHistoryPDF() {
     if (!tripHistory.length) { alert('No hay carreras para exportar.'); return; }
     const totalUSD   = tripHistory.reduce((s,t) => s+t.costUSD, 0);
     const totalKm    = tripHistory.reduce((s,t) => s+t.distKm, 0);
-    const driverEarn = totalUSD * (1-COMISION);
     const rows = tripHistory.map(t => `
         <tr>
             <td>${t.timestamp.toLocaleString('es-VE')}</td>
@@ -1619,7 +1597,6 @@ function exportHistoryPDF() {
         <div class="summary">
             <div class="sum-box"><div class="sum-label">Total carreras</div><div class="sum-val">${tripHistory.length}</div></div>
             <div class="sum-box"><div class="sum-label">Total cobrado</div><div class="sum-val">$${totalUSD.toFixed(2)}</div></div>
-            <div class="sum-box"><div class="sum-label">Ganancias (90%)</div><div class="sum-val">$${driverEarn.toFixed(2)}</div></div>
             <div class="sum-box"><div class="sum-label">KM recorridos</div><div class="sum-val">${totalKm.toFixed(1)}</div></div>
         </div>
         <table>
@@ -1740,7 +1717,7 @@ async function submitAuth() {
             if (!name || !phone) { err.textContent = '⚠️ Completa nombre y teléfono.'; err.style.display = 'block'; return; }
             const cred = await auth.createUserWithEmailAndPassword(email, pass);
             await db.collection('drivers').doc(cred.user.uid).set({
-                name, phone, email, paidUntil: null,
+                name, phone, email, paidUntil: null, tripCount: 0,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         } else {

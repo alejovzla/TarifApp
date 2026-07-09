@@ -19,6 +19,11 @@
   --bg-input:#121212;--border:#3a3a3a;--text:#E8E8F4;--text-muted:#7A7A9A;
   --radius:18px;--radius-sm:10px;
 }
+:root[data-theme="light"]{
+  --primary:#3d7a9c;--primary-dark:#3d7a9c;--accent:#0f9d78;
+  --warning:#b8720a;--danger:#c4294f;--bg:#ffffff;--bg-card:#f4f4f4;
+  --bg-input:#ececec;--border:#d9d9d9;--text:#1a1a1a;--text-muted:#666666;
+}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* ── SCREENS ── */
@@ -43,7 +48,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .vehicle-btn-icon{font-size:28px;flex-shrink:0}
 .vehicle-btn-name{font-size:14px;font-weight:700;color:var(--text)}
 .vehicle-btn-meta{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.5}
-.vehicle-btn.selected .vehicle-btn-meta{color:#90b8d2}
+.vehicle-btn.selected .vehicle-btn-meta{color:var(--primary)}
 
 /* ── BCV WIDGET ── */
 .bcv-card.loaded{border-color:rgba(67,217,173,.30)}
@@ -181,7 +186,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .history-table td:first-child{text-align:left;padding-left:14px;color:var(--text-muted);font-size:11px}
 .history-table tr:last-child td{border-bottom:none}
 .history-table tr:hover td{background:rgba(96,153,190,.05)}
-.history-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(96,153,190,.15);border-radius:6px;width:24px;height:20px;font-size:10px;font-weight:800;color:#90b8d2}
+.history-num{display:inline-flex;align-items:center;justify-content:center;background:rgba(96,153,190,.15);border-radius:6px;width:24px;height:20px;font-size:10px;font-weight:800;color:var(--primary)}
 .history-empty{text-align:center;color:var(--text-muted);font-size:13px;padding:28px;font-style:italic}
 .history-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--border)}
 .history-total-cell{text-align:center;padding:10px 8px}
@@ -200,7 +205,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .taxi-trip-info{display:flex;flex-direction:column;gap:2px}
 .taxi-trip-title{font-size:13px;font-weight:700;color:var(--text)}
 .taxi-trip-est{font-size:11px;color:var(--text-muted)}
-.taxi-est-price{font-size:14px;font-weight:800;color:#90b8d2}
+.taxi-est-price{font-size:14px;font-weight:800;color:var(--primary)}
 .taxi-body{padding:16px 14px 100px;max-width:500px;margin:0 auto}
 .gps-status-bar{display:flex;align-items:center;gap:9px;background:rgba(67,217,173,.07);border:1px solid rgba(67,217,173,.18);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:12px;font-size:12px}
 .gps-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:gpsBlip 1.2s ease-in-out infinite}
@@ -244,7 +249,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 #screenInvoice .header{background:linear-gradient(135deg,#262626,#1a1a1a);padding:18px 20px 24px}
 .invoice-body{padding:0 14px 80px;max-width:500px;margin:0 auto}
 .invoice-trip-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.trip-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(96,153,190,.12);border:1px solid rgba(96,153,190,.25);border-radius:20px;font-size:11px;font-weight:700;color:#90b8d2;padding:4px 10px}
+.trip-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(96,153,190,.12);border:1px solid rgba(96,153,190,.25);border-radius:20px;font-size:11px;font-weight:700;color:var(--primary);padding:4px 10px}
 .cmp-table{width:100%;border-collapse:collapse;margin-top:4px}
 .cmp-table th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:6px 8px;text-align:right}
 .cmp-table th:first-child{text-align:left}
@@ -252,7 +257,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .cmp-table td:first-child{text-align:left;color:var(--text-muted);font-size:12px}
 .cmp-table tr:last-child td{border-bottom:none}
 .cmp-table .total-row td{font-size:15px;font-weight:800;border-top:2px solid var(--border);padding-top:12px}
-.cmp-table .total-row td:nth-child(2){color:#90b8d2}
+.cmp-table .total-row td:nth-child(2){color:var(--primary)}
 .cmp-table .total-row td:nth-child(3){color:var(--accent)}
 .diff-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px}
 .diff-up{background:rgba(255,179,71,.15);color:var(--warning)}
@@ -292,6 +297,19 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 .apikey-input.has-toggle{padding-right:42px}
 .pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);padding:6px;line-height:1}
 .pwd-toggle:hover{color:var(--text)}
+
+/* ── MODO CLARO — overrides de fondos/colores fijos que no usan variables ── */
+[data-theme="light"] #screenTaxi{background:#fafafa}
+[data-theme="light"] .taxi-header{background:linear-gradient(135deg,#f0f0f0,#ffffff)}
+[data-theme="light"] .taxi-stat-card{background:#f0f0f0}
+[data-theme="light"] .taxi-price-card{background:linear-gradient(160deg,#eef4f8,#ffffff);border-color:#6099be55}
+[data-theme="light"] .progress-wrap{background:#e6e6e6}
+[data-theme="light"] #screenInvoice .header{background:linear-gradient(135deg,#f0f0f0,#ffffff)}
+[data-theme="light"] .final-price-card{background:linear-gradient(160deg,#eef4f8,#ffffff)}
+[data-theme="light"] .diff-eq{background:rgba(0,0,0,.05)}
+[data-theme="light"] .settings-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:rgba(0,0,0,.65)}
+[data-theme="light"] .settings-btn:hover{background:rgba(0,0,0,.1)}
+[data-theme="light"] .card,[data-theme="light"] .history-card{box-shadow:0 2px 12px rgba(0,0,0,.08)}
 </style>
 </head>
 <body>
@@ -325,12 +343,15 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 <!-- ══ SCREEN 1 — ESTIMACIÓN ══ -->
 <div id="screenEstimation" class="screen active">
   <div class="header">
-    <img class="header-logo" src="logo-full.png" alt="TarifApp">
+    <img class="header-logo" id="headerLogo" src="logo-full.png" alt="TarifApp">
     <p>Taxímetro en Tiempo Real · Venezuela</p>
     <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap">
       <button class="settings-btn" id="installBtn" onclick="installApp()" style="display:none">⬇️ Instalar App</button>
       <span class="settings-btn" id="subStatusBadge" style="cursor:default"></span>
       <button class="settings-btn" onclick="doLogout()">🔒 Cerrar sesión</button>
+    </div>
+    <div style="margin-top:6px">
+      <button class="settings-btn" id="themeToggleBtn" onclick="toggleTheme()">☀️ Modo claro</button>
     </div>
   </div>
 
@@ -1438,7 +1459,7 @@ function renderHistory() {
     document.getElementById('historyTotals').innerHTML = `
         <div class="history-total-cell">
             <div class="htc-label">Total carreras</div>
-            <div class="htc-value" style="color:#90b8d2">${total}</div>
+            <div class="htc-value" style="color:var(--primary)">${total}</div>
         </div>
         <div class="history-total-cell">
             <div class="htc-label">KM Recorridos</div>
@@ -1748,7 +1769,23 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+/* ════════════════════════════════════════
+   TEMA — CLARO / OSCURO
+════════════════════════════════════════ */
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('headerLogo').src = theme === 'light' ? 'logo-full-dark.png' : 'logo-full.png';
+    document.getElementById('themeToggleBtn').textContent = theme === 'light' ? '🌙 Modo oscuro' : '☀️ Modo claro';
+    localStorage.setItem('tarifapp_theme', theme);
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    applyTheme(current === 'light' ? 'dark' : 'light');
+}
+
 /* ── Arranque ── */
+applyTheme(localStorage.getItem('tarifapp_theme') || 'dark');
 loadHistory();
 
 auth.onAuthStateChanged(async user => {

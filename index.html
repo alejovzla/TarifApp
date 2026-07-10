@@ -677,6 +677,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-check-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-functions-compat.js"></script>
 
 <script>
 /* ════════════════════════════════════════
@@ -1377,12 +1378,12 @@ function flashBtn(id) { const b=document.getElementById(id); b.classList.add('fl
 /* ════════════════════════════════════════
    FASE 3 — FACTURA
 ════════════════════════════════════════ */
-function finishTrip() {
+async function finishTrip() {
     if (!trip.running) return;
     trip.finalElapsedSec = Math.floor((Date.now() - trip.startTime) / 1000);
     clearInterval(trip.interval); trip.running = false;
     stopGPSTracking();
-    generateInvoice();
+    await generateInvoice();
     showScreen('screenInvoice');
 }
 
@@ -1391,9 +1392,9 @@ function cancelTrip() {
     resetApp();
 }
 
-function generateInvoice() {
+async function generateInvoice() {
     const veh = VEHICULOS[trip.vehiculo];
-    const dem = DEMANDA_CFG[trip.demanda];
+    let dem = DEMANDA_CFG[trip.demanda];
     const eKm=trip.estKm, eMin=trip.estMin;
     const eCostKm=eKm*PRECIO_KM, eCostMin=eMin*PRECIO_MIN;
     const eSub=veh.banderazo+eCostKm+eCostMin;
@@ -1405,7 +1406,25 @@ function generateInvoice() {
     const rMin = rElapsedMin + trip.extraMin;
     const rCostKm=rKm*PRECIO_KM, rCostMin=rMin*PRECIO_MIN;
     const rSub=veh.banderazo+rCostKm+rCostMin;
-    const rFinal=Math.max(rSub*dem.factor, veh.minimo);
+    let rFinal=Math.max(rSub*dem.factor, veh.minimo);
+
+    /* El cobro real se confirma con la Cloud Function: banderazo, precio por
+       km/minuto y demanda se recalculan del lado del servidor, así que editar
+       el JavaScript del navegador ya no altera lo que realmente se cobra.
+       Si falla (sin conexión, etc.) se usa el cálculo local como respaldo. */
+    try {
+        const pos = lastGpsPos || stops[0]?.position || gMap.getCenter();
+        const calc = await functionsClient.httpsCallable('calcularTarifa')({
+            vehiculo: trip.vehiculo, km: rKm, min: rMin,
+            lat: pos.lat(), lng: pos.lng()
+        });
+        rFinal = calc.data.precio;
+        const demServer = DEMANDA_CFG[calc.data.demanda];
+        if (demServer) dem = { ...demServer, factor: calc.data.factor };
+    } catch (e) {
+        console.warn('No se pudo confirmar la tarifa con el servidor, se usa el cálculo local.', e);
+    }
+
     const rVES=rFinal*trip.bcvRate;
     const diffUSD=rFinal-eFinal;
 
@@ -1716,6 +1735,7 @@ firebase.appCheck().activate(
 
 const auth = firebase.auth();
 const db   = firebase.firestore();
+const functionsClient = firebase.app().functions('southamerica-east1');
 
 let authMode = 'login'; // 'login' | 'register'
 

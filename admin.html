@@ -40,6 +40,14 @@ tr:last-child td{border-bottom:none}
 .pwd-wrap input{padding-right:42px;margin-bottom:10px}
 .pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);padding:6px;line-height:1}
 .pwd-toggle:hover{color:var(--text)}
+.link-btn{background:none;border:1px solid var(--border);color:var(--primary);font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;font-family:inherit}
+.link-btn:hover{background:rgba(96,153,190,.12)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+.modal-head h1{font-size:16px}
+.tablewrap{overflow-x:auto}
 </style>
 </head>
 <body>
@@ -70,10 +78,10 @@ tr:last-child td{border-bottom:none}
     <div class="card">
       <table>
         <thead>
-          <tr><th>Chofer</th><th>Teléfono</th><th>Carreras</th><th>Estado</th><th>Pagó esta semana</th></tr>
+          <tr><th>Chofer</th><th>Teléfono</th><th>Carreras</th><th>Estado</th><th>Pagó esta semana</th><th>Historial</th></tr>
         </thead>
         <tbody id="driversBody">
-          <tr><td colspan="5" class="empty">Cargando…</td></tr>
+          <tr><td colspan="6" class="empty">Cargando…</td></tr>
         </tbody>
       </table>
     </div>
@@ -89,6 +97,23 @@ tr:last-child td{border-bottom:none}
     </div>
   </div>
 
+</div>
+
+<div class="modal-overlay" id="tripsModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h1 id="tripsModalTitle">Viajes</h1>
+      <button class="secondary" onclick="closeTripsModal()">✕ Cerrar</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Fecha</th><th>Vehículo</th><th>Demanda</th><th>Monto</th><th>Km</th><th>Tiempo</th></tr>
+        </thead>
+        <tbody id="tripsBody"><tr><td colspan="6" class="empty">—</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
@@ -151,7 +176,7 @@ auth.onAuthStateChanged(user => {
 async function loadDrivers() {
     const body = document.getElementById('driversBody');
     const snap = await db.collection('drivers').orderBy('createdAt', 'desc').get();
-    if (snap.empty) { body.innerHTML = '<tr><td colspan="5" class="empty">Aún no hay choferes registrados.</td></tr>'; return; }
+    if (snap.empty) { body.innerHTML = '<tr><td colspan="6" class="empty">Aún no hay choferes registrados.</td></tr>'; return; }
 
     const now = new Date();
     body.innerHTML = '';
@@ -160,6 +185,7 @@ async function loadDrivers() {
         const paidUntil = d.paidUntil?.toDate?.() || null;
         const isPaid = paidUntil && paidUntil > now;
         const tripCount = Number.isFinite(d.tripCount) ? d.tripCount : 0;
+        const safeName = escapeHtml(d.name || 'Chofer');
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${escapeHtml(d.name || '(sin nombre)')}<br><span style="color:var(--text-muted);font-size:11px">${escapeHtml(d.email || '')}</span></td>
@@ -167,9 +193,43 @@ async function loadDrivers() {
             <td style="text-align:center">${tripCount}</td>
             <td><span class="status ${isPaid ? 'ok' : 'no'}">${isPaid ? '✓ Pagó · vence ' + paidUntil.toLocaleDateString('es-VE') : '✕ Vencido'}</span></td>
             <td><input type="checkbox" class="toggle" ${isPaid ? 'checked' : ''} onchange="togglePaid('${doc.id}', this.checked)"></td>
+            <td><button class="link-btn" data-uid="${doc.id}" data-name="${safeName}" onclick="showTrips(this.dataset.uid, this.dataset.name)">Ver</button></td>
         `;
         body.appendChild(tr);
     });
+}
+
+async function showTrips(uid, name) {
+    document.getElementById('tripsModalTitle').textContent = 'Viajes de ' + name;
+    document.getElementById('tripsModal').classList.add('show');
+    const body = document.getElementById('tripsBody');
+    body.innerHTML = '<tr><td colspan="6" class="empty">Cargando…</td></tr>';
+    try {
+        const snap = await db.collection('drivers').doc(uid).collection('trips')
+            .orderBy('timestamp', 'desc').limit(50).get();
+        if (snap.empty) { body.innerHTML = '<tr><td colspan="6" class="empty">Sin viajes registrados todavía.</td></tr>'; return; }
+        body.innerHTML = '';
+        snap.forEach(doc => {
+            const t = doc.data();
+            const date = t.timestamp?.toDate?.();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${date ? date.toLocaleString('es-VE') : '—'}</td>
+                <td>${escapeHtml(t.vehiculo || '—')}</td>
+                <td>${escapeHtml(t.demanda || '—')}</td>
+                <td>$${(t.costUSD || 0).toFixed(2)}</td>
+                <td>${(t.distKm || 0).toFixed(2)} km</td>
+                <td>${Math.round(t.durMin || 0)} min</td>
+            `;
+            body.appendChild(tr);
+        });
+    } catch (e) {
+        body.innerHTML = '<tr><td colspan="6" class="empty">No se pudo cargar el historial.</td></tr>';
+    }
+}
+
+function closeTripsModal() {
+    document.getElementById('tripsModal').classList.remove('show');
 }
 
 async function togglePaid(uid, checked) {

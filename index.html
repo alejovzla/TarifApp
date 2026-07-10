@@ -1497,6 +1497,18 @@ function recordTrip(data) {
     saveHistory();
     renderHistory();
     incrementTripCount();
+    syncTripToFirestore(data);
+}
+
+function syncTripToFirestore(data) {
+    const user = auth.currentUser;
+    if (!user) return;
+    db.collection('drivers').doc(user.uid).collection('trips').add({
+        vehiculo: data.vehiculo, demanda: data.demanda,
+        costUSD: data.finalUSD, costVES: data.finalVES,
+        distKm: data.realKm, durMin: data.realMin,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(() => { /* si falla (sin conexión, etc.) el viaje sigue guardado localmente */ });
 }
 
 function incrementTripCount() {
@@ -1763,6 +1775,7 @@ async function submitAuth() {
             const name  = document.getElementById('authName').value.trim();
             const phone = document.getElementById('authPhone').value.trim();
             if (!name || !phone) { err.textContent = '⚠️ Completa nombre y teléfono.'; err.style.display = 'block'; return; }
+            if (pass.length < 8) { err.textContent = '⚠️ La contraseña debe tener al menos 8 caracteres.'; err.style.display = 'block'; return; }
             const cred = await auth.createUserWithEmailAndPassword(email, pass);
             await db.collection('drivers').doc(cred.user.uid).set({
                 name, phone, email, paidUntil: null, tripCount: 0,

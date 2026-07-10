@@ -676,6 +676,7 @@ input[type="number"][readonly]{border-color:rgba(67,217,173,.35);color:var(--acc
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-check-compat.js"></script>
 
 <script>
 /* ════════════════════════════════════════
@@ -1706,6 +1707,13 @@ const firebaseConfig = {
     appId:             "1:848849404178:web:28c42850bce69521b833cb"
 };
 firebase.initializeApp(firebaseConfig);
+
+// App Check: verifica ante Firestore que las peticiones vienen de la app real, no de un script.
+firebase.appCheck().activate(
+    new firebase.appCheck.ReCaptchaEnterpriseProvider('6LfODUwtAAAAANAR5OnEfQ1PFI7oOKoFHj7HfNDD'),
+    true // refresca el token automaticamente
+);
+
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
